@@ -5,6 +5,7 @@ var storeID = '';
 
 var stopWork = false;
 var meituanOrderCnt = 0;
+var meituanOrderUrl = "http://e.waimai.meituan.com/#/v2/order/history";
 
 function checkWorkTime() {
   // 早上八点半 到晚上十点半
@@ -20,7 +21,7 @@ function checkWorkTime() {
   } else {
     console.log("current " + hour  + ":" + minutes + " stop work true tm: " + tm);
     stopWork = true;
-    meituanOrderCnt = 0;
+  meituanOrderCnt = 0;
   }
 }
 checkWorkTime();
@@ -142,22 +143,36 @@ function ProcessMeiTuanOrder() {
     pageNum = 1;
     index = 0;
     getAllOrder = true;
-    meituanOrderCnt = 0
+  meituanOrderCnt = 0;
     setTimeout(ProcessMeiTuanOrder, 60000);
     return;
   }
   // allOrder = $(".order-list", window.frames["hashframe"].document).find("li");
   // lastNum = $("#ordersCount", window.frames["hashframe"].document).text();
   // orderNum = allOrder.length;
+  var curUrl = window.location.href;
+  if( curUrl != meituanOrderUrl ) {
+  console.log("need jump to url: " + meituanOrderUrl);
+  window.location.href = meituanOrderUrl;
+  window.location.reload();
+    return;
+  }
+
   var curNum = parseInt($("#ordersCount", window.frames["hashframe"].document).text());
-  console.log("lastNum:" + meituanOrderCnt + ", curNum:" + curNum);
+  var log = "lastNum:" + meituanOrderCnt + ", curNum:" + curNum + ", pageNum: " + pageNum;
+  if( getAllOrder ) {
+  log += ", getAllOrder: true";
+  } else {
+  log += ", getAllOrder: false";
+  }
+  console.log(log);
   if( pageNum == 1 ) {
-    if( curNum == meituanOrderCnt ) {
+  if( curNum == meituanOrderCnt ) {
       setTimeout(ProcessMeiTuanOrder, 20000);
-      return;
-    } else {
+    return;
+  } else {
       meituanOrderCnt = curNum;
-    }
+  }
   }
 
   var nowDate = toDateStr(new Date());
@@ -165,7 +180,7 @@ function ProcessMeiTuanOrder() {
   var OrderUrl = refreshOrderUrl + "&startDate=" + nowDate + "&endDate=" + nowDate + "&pageNum=" + pageNum;
   $.get(OrderUrl, function(data, success) {
     if (success != 'success') {
-      pageNum = 1;
+    pageNum = 1;
       index = 0;
       getAllOrder = false;
       setTimeout("ProcessMeiTuanOrder()", 60000);
@@ -660,7 +675,8 @@ if (shopName == "koubei") {
   elemeStoreID = storeInfo.rid || storeInfo.oid;
   storeID = elemeStoreID;
   ProcessEleOrderV2();
-  setTimeout(function() {
+  //setTimeout(function() {
+  setInterval(function() {
     window.location.reload();
   }, 300000);
 } else if (shopName == "baidu") {
@@ -693,7 +709,8 @@ function callMeituanAll() {
   }
   // $("input[name=pay-type]", window.frames["hashframe"].document)[0].click();
   meituanInterval = setTimeout("ProcessMeiTuanOrder()", 10000);
-  setTimeout(function() {
+  //setTimeout(function() {
+  setInterval(function() {
     // 避免页面出错 长时间不刷新
     window.location.reload();
   }, 600000);
@@ -714,7 +731,7 @@ function reportHeartBeat() {
 
   chrome.extension.sendRequest(heartInfo, function(response) {
     console.log(response.farewell);
-     });
+  });
 }
 
 var heartInterval = 1000 * 60 * 1;
