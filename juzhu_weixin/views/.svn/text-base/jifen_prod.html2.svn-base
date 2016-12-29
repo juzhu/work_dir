@@ -1,0 +1,48 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>聚箸</title>
+    <link rel="stylesheet" href="/stylesheets/weui.css"/>
+    <link rel="stylesheet" href="/stylesheets/juzhu_shop.css"/>
+    <link rel="stylesheet" href="/stylesheets/example.css"/>
+  </head>
+  <body style="overflow-y:hidden ">
+    <!-- 商品头部大图 -->
+    <div class='juzhu_banner'>
+      <img src='/images/jifen_img/huahseng_normal.png'>
+    </div>
+    <div class='jifen_prod_detail'>
+      <div class='jifen_prod_title'>
+        <p>香酥花生米</p>
+      </div>
+      <div class='jifen_prod_info'>
+        <span class='info_sale'>月售10份</span>
+        <!--<span class ='info-evaluate'>好评 100%</span>-->
+      </div>
+      <div class="info-price">
+        <span class="info_price_new">积分: 100</span>
+        <del class="info_price_old">积分: 200</del>
+      </div>
+      <div class='prod_info_section'>
+      <div class="prod_info_title_name">原料介绍</div>
+      <div class="prod_info_title_line"></div>
+      <div class"prod_info_content">
+      <p>花生,又名“长生果”,是我国产量丰富、食用广泛的一种坚果.富含人体所需的氨基酸及不饱和脂肪酸，含卵磷脂、胆碱、胡萝卜素、粗纤维等物质。经过油炸之后散发特有的香味，营养又美味！</p>
+      </div>
+      </div>
+      <div class='prod_info_section'>
+      <div class="prod_info_title_name">制作流程</div>
+      <div class="prod_info_title_line"></div>
+      <div class"prod_info_content">
+      <p>将花生米洗净控干，锅底备凉油淹没花生米一起下锅，热油容易导致花生米受热不均，外焦内生。中火下翻炒直到花生米至金黄色且没有小泡冒出，捞出趁热洒少许白酒，摊平晾干之后撒上少许食盐，包装好防潮，花生米酥脆一致，色泽美观，香味可口。</p>
+      </div>
+      </div>
+
+      <div class="btn_pos">
+      <a href="javascript:;" class="weui_btn weui_btn_primary">我要兑换</a>
+      </div>
+      </div>
+      </body>
+      </html>
+

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>聚箸</title>
+    <link rel="stylesheet" href="./stylesheets/weui.css"/>
+    <link rel="stylesheet" href="./stylesheets/example.css"/>
+  </head>
+  <body ontouchstart>
+    <div class="container" id="container">
+      <div class="weui_tab">
+        <div class="weui_tab_bd" id="tb_container">
+        </div>
+        <div class="weui_tabbar">
+          <a href="#/shopList" class="weui_tabbar_item weui_bar_item_on">
+            <div class="weui_tabbar_icon">
+              <img src="./images/icon_nav_button.png" alt="">
+            </div>
+            <p class="weui_tabbar_label">点餐</p>
+          </a>
+          <a href="#/trolley" class="weui_tabbar_item">
+            <div class="weui_tabbar_icon">
+              <img src="./images/icon_nav_msg.png" alt="">
+            </div>
+            <p class="weui_tabbar_label">购物车</p>
+          </a>
+          <a href="#/" class="weui_tabbar_item">
+            <div class="weui_tabbar_icon">
+              <img src="./images/icon_nav_article.png" alt="">
+            </div>
+            <p class="weui_tabbar_label">积分</p>
+          </a>
+          <a href="#/shopList" class="weui_tabbar_item">
+            <div class="weui_tabbar_icon">
+              <img src="./images/icon_nav_cell.png" alt="">
+            </div>
+            <p class="weui_tabbar_label">我</p>
+          </a>
+        </div>
+      </div>
+    </div>
+    <script type="text/html" id="tpl_panel">
+      <div class="bd">
+        <div class="weui_panel weui_panel_access">
+          <div class="weui_panel_hd"></div>
+          <div class="weui_panel_bd">
+            {{#if userInfo.point}}
+            <a href='/pointFAQ' class="weui_media_box weui_media_appmsg">
+            {{/if}}
+            {{^if userInfo.point}}
+            <a href="/addPhone" class="weui_media_box weui_media_appmsg">
+            {{/if}}
+
+            <div class="weui_media_hd">
+              <img class="weui_media_appmsg_thumb" src="{{userInfo.headImagUrl}}">
+            </div>
+            <div class="weui_media_bd">
+              <h4 class="weui_media_title">{{userInfo.nickName}}</h4>
+              {{#if userInfo.point}}
+              <p class="weui_media_desc">当前积分: {{userInfo.point}} 累计积分: {{userInfo.accumulate_point}}</p>
+              {{/if}}
+              {{^if userInfo.point}}
+              <p class="weui_media_desc" id=""><u>绑定手机号，查看积分</u></p>
+              {{/if}}
+
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="weui_cells_title">我的外卖账户</div>
+    <div class="weui_cells weui_cells_access">
+      {{#userInfo}}
+      {{#allPhone}}
+      <a class="weui_cell" href="/phoneDetail/{{phone}}">
+        <div class="weui_cell_bd weui_cell_primary">
+          <p>{{phone}}</p>
+        </div>
+        <div class="weui_cell_ft">
+        </div>
+      </a>
+      {{/allPhone}}
+      {{^allPhone}}
+      <a class="weui_cell" href="/addPhone">
+        <div class="weui_cell_bd weui_cell_primary">
+          <p></p>
+        </div>
+        <div class="weui_cell_ft">
+          新增绑定
+        </div>
+      </a>
+
+      {{/allPhone}}
+
+      <a class="weui_cell" href="/pointFAQ">
+        <div class="weui_cell_bd weui_cell_primary">
+          <p></p>
+        </div>
+        <div class="weui_cell_ft">
+          了解积分
+        </div>
+      </a>
+      {{/userInfo}}
+
+      {{^if userInfo.point}}
+      <div class="weui_media_box weui_media_text">
+        <h4 class="weui_media_title">绑定有什么用处</h4>
+        <p class="weui_media_desc">绑定之后可实时查看您通过以该手机号在各大外卖平台点餐聚箸的订单情况，以及每个订单产生的积分</p>
+        <ul class="weui_media_info">
+          <li class="weui_media_info_meta">聚箸</li>
+          <li class="weui_media_info_meta">2016-04-12</li>
+        </ul>
+      </div>
+      <div class="weui_media_box weui_media_text">
+        <h4 class="weui_media_title">积分有什么用处</h4>
+        <p class="weui_media_desc">累积聚箸积分可以兑换聚箸提供的小菜品，以及各种小礼品，以及在微信下单时候直接抵扣现金 </p>
+        <ul class="weui_media_info">
+          <li class="weui_media_info_meta">聚箸</li>
+          <li class="weui_media_info_meta">2016-04-12</li>
+        </ul>
+      </div>
+      {{/if}}
+
+
+
+    </div>
+  </script>
+
+  <script type="text/html" id="tpl_add_phone">
+    <div class="weui_cells">
+      <div class="weui_cell weui_cell_select weui_select_before">
+        <div class="weui_cell_hd">
+          <select class="weui_select" name="select2">
+            <option value="1">+86</option>
+          </select>
+        </div>
+        <div class="weui_cell_bd weui_cell_primary">
+          <input class="weui_input" type="number" pattern="[0-9]*" placeholder="请输入号码">
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <script type="text/html" id="tpl_cell">
+    <div class="hd">
+      <h1 class="page_title">Cell</h1>
+    </div>
+    <div class="bd">
+      <div class="weui_cells_title">带说明的列表项</div>
+      <div class="weui_cells">
+        <div class="weui_cell">
+          <div class="weui_cell_bd weui_cell_primary">
+            <p>标题文字</p>
+          </div>
+          <div class="weui_cell_ft">说明文字</div>
+        </div>
+      </div>
+      <div class="weui_cells_title">带图标、说明的列表项</div>
+      <div class="weui_cells">
+        <div class="weui_cell">
+          <div class="weui_cell_hd"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAMAAABgZ9sFAAAAVFBMVEXx8fHMzMzr6+vn5+fv7+/t7e3d3d2+vr7W1tbHx8eysrKdnZ3p6enk5OTR0dG7u7u3t7ejo6PY2Njh4eHf39/T09PExMSvr6+goKCqqqqnp6e4uLgcLY/OAAAAnklEQVRIx+3RSRLDIAxE0QYhAbGZPNu5/z0zrXHiqiz5W72FqhqtVuuXAl3iOV7iPV/iSsAqZa9BS7YOmMXnNNX4TWGxRMn3R6SxRNgy0bzXOW8EBO8SAClsPdB3psqlvG+Lw7ONXg/pTld52BjgSSkA3PV2OOemjIDcZQWgVvONw60q7sIpR38EnHPSMDQ4MjDjLPozhAkGrVbr/z0ANjAF4AcbXmYAAAAASUVORK5CYII=" alt="" style="width:20px;margin-right:5px;display:block"></div>
+          <div class="weui_cell_bd weui_cell_primary">
+            <p>标题文字</p>
+          </div>
+          <div class="weui_cell_ft">说明文字</div>
+        </div>
+        <div class="weui_cell">
+          <div class="weui_cell_hd"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAMAAABgZ9sFAAAAVFBMVEXx8fHMzMzr6+vn5+fv7+/t7e3d3d2+vr7W1tbHx8eysrKdnZ3p6enk5OTR0dG7u7u3t7ejo6PY2Njh4eHf39/T09PExMSvr6+goKCqqqqnp6e4uLgcLY/OAAAAnklEQVRIx+3RSRLDIAxE0QYhAbGZPNu5/z0zrXHiqiz5W72FqhqtVuuXAl3iOV7iPV/iSsAqZa9BS7YOmMXnNNX4TWGxRMn3R6SxRNgy0bzXOW8EBO8SAClsPdB3psqlvG+Lw7ONXg/pTld52BjgSSkA3PV2OOemjIDcZQWgVvONw60q7sIpR38EnHPSMDQ4MjDjLPozhAkGrVbr/z0ANjAF4AcbXmYAAAAASUVORK5CYII=" alt="" style="width:20px;margin-right:5px;display:block"></div>
+          <div class="weui_cell_bd weui_cell_primary">
+            <p>标题文字</p>
+          </div>
+          <div class="weui_cell_ft">说明文字</div>
+        </div>
+      </div>
+
+      <div class="weui_cells_title">带跳转的列表项</div>
+      <div class="weui_cells weui_cells_access">
+        <a class="weui_cell" href="javascript:;">
+          <div class="weui_cell_bd weui_cell_primary">
+            <p>cell standard</p>
+          </div>
+          <div class="weui_cell_ft">
+          </div>
+        </a>
+        <a class="weui_cell" href="javascript:;">
+          <div class="weui_cell_bd weui_cell_primary">
+            <p>cell standard</p>
+          </div>
+          <div class="weui_cell_ft">
+          </div>
+        </a>
+      </div>
+
+      <div class="weui_cells_title">带说明、跳转的列表项</div>
+      <div class="weui_cells weui_cells_access">
+        <a class="weui_cell" href="javascript:;">
+          <div class="weui_cell_bd weui_cell_primary">
+            <p>cell standard</p>
+          </div>
+          <div class="weui_cell_ft">说明文字</div>
+        </a>
+        <a class="weui_cell" href="javascript:;">
+          <div class="weui_cell_bd weui_cell_primary">
+            <p>cell standard</p>
+          </div>
+          <div class="weui_cell_ft">说明文字</div>
+        </a>
+
+      </div>
+
+      <div class="weui_cells_title">带图标、说明、跳转的列表项</div>
+      <div class="weui_cells weui_cells_access">
+
+        <a class="weui_cell" href="javascript:;">
+          <div class="weui_cell_hd"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAMAAABgZ9sFAAAAVFBMVEXx8fHMzMzr6+vn5+fv7+/t7e3d3d2+vr7W1tbHx8eysrKdnZ3p6enk5OTR0dG7u7u3t7ejo6PY2Njh4eHf39/T09PExMSvr6+goKCqqqqnp6e4uLgcLY/OAAAAnklEQVRIx+3RSRLDIAxE0QYhAbGZPNu5/z0zrXHiqiz5W72FqhqtVuuXAl3iOV7iPV/iSsAqZa9BS7YOmMXnNNX4TWGxRMn3R6SxRNgy0bzXOW8EBO8SAClsPdB3psqlvG+Lw7ONXg/pTld52BjgSSkA3PV2OOemjIDcZQWgVvONw60q7sIpR38EnHPSMDQ4MjDjLPozhAkGrVbr/z0ANjAF4AcbXmYAAAAASUVORK5CYII=" alt="" style="width:20px;margin-right:5px;display:block"></div>
+          <div class="weui_cell_bd weui_cell_primary">
+            <p>cell standard</p>
+          </div>
+          <div class="weui_cell_ft">说明文字</div>
+        </a>
+        <a class="weui_cell" href="javascript:;">
+          <div class="weui_cell_hd"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAMAAABgZ9sFAAAAVFBMVEXx8fHMzMzr6+vn5+fv7+/t7e3d3d2+vr7W1tbHx8eysrKdnZ3p6enk5OTR0dG7u7u3t7ejo6PY2Njh4eHf39/T09PExMSvr6+goKCqqqqnp6e4uLgcLY/OAAAAnklEQVRIx+3RSRLDIAxE0QYhAbGZPNu5/z0zrXHiqiz5W72FqhqtVuuXAl3iOV7iPV/iSsAqZa9BS7YOmMXnNNX4TWGxRMn3R6SxRNgy0bzXOW8EBO8SAClsPdB3psqlvG+Lw7ONXg/pTld52BjgSSkA3PV2OOemjIDcZQWgVvONw60q7sIpR38EnHPSMDQ4MjDjLPozhAkGrVbr/z0ANjAF4AcbXmYAAAAASUVORK5CYII=" alt="" style="width:20px;margin-right:5px;display:block"></div>
+          <div class="weui_cell_bd weui_cell_primary">
+            <p>cell standard</p>
+          </div>
+          <div class="weui_cell_ft">说明文字</div>
+        </a>
+      </div>
+
+      <div class="weui_cells_title">单选列表项</div>
+      <div class="weui_cells weui_cells_radio">
+        <label class="weui_cell weui_check_label" for="x11">
+          <div class="weui_cell_bd weui_cell_primary">
+            <p>cell standard</p>
+          </div>
+          <div class="weui_cell_ft">
+            <input type="radio" class="weui_check" name="radio1" id="x11">
+            <span class="weui_icon_checked"></span>
+          </div>
+        </label>
+        <label class="weui_cell weui_check_label" for="x12">
+
+          <div class="weui_cell_bd weui_cell_primary">
+            <p>cell standard</p>
+          </div>
+          <div class="weui_cell_ft">
+            <input type="radio" name="radio1" class="weui_check" id="x12" checked="checked">
+            <span class="weui_icon_checked"></span>
+          </div>
+        </label>
+      </div>
+      <div class="weui_cells_title">复选列表项</div>
+      <div class="weui_cells weui_cells_checkbox">
+        <label class="weui_cell weui_check_label" for="s11">
+          <div class="weui_cell_hd">
+            <input type="checkbox" class="weui_check" name="checkbox1" id="s11" checked="checked">
+            <i class="weui_icon_checked"></i>
+          </div>
+          <div class="weui_cell_bd weui_cell_primary">
+            <p>standard is dealt for u.</p>
+          </div>
+        </label>
+        <label class="weui_cell weui_check_label" for="s12">
+          <div class="weui_cell_hd">
+            <input type="checkbox" name="checkbox1" class="weui_check" id="s12">
+            <i class="weui_icon_checked"></i>
+          </div>
+          <div class="weui_cell_bd weui_cell_primary">
+            <p>standard is dealicient for u.</p>
+          </div>
+        </label>
+      </div>
+
+      <div class="weui_cells_title">开关</div>
+      <div class="weui_cells weui_cells_form">
+        <div class="weui_cell weui_cell_switch">
+          <div class="weui_cell_hd weui_cell_primary">标题文字</div>
+          <div class="weui_cell_ft">
+            <input class="weui_switch" type="checkbox"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="weui_cells_title">表单</div>
+      <div class="weui_cells weui_cells_form">
+        <div class="weui_cell">
+          <div class="weui_cell_hd"><label class="weui_label">qq</label></div>
+          <div class="weui_cell_bd weui_cell_primary">
+            <input class="weui_input" type="number" pattern="[0-9]*" placeholder="请输入qq号"/>
+          </div>
+        </div>
+        <div class="weui_cell weui_vcode">
+          <div class="weui_cell_hd"><label class="weui_label">验证码</label></div>
+          <div class="weui_cell_bd weui_cell_primary">
+            <input class="weui_input" type="number" placeholder="请输入验证码"/>
+          </div>
+          <div class="weui_cell_ft">
+            <img src="./images/vcode.jpg" />
+          </div>
+        </div>
+        <div class="weui_cell">
+          <div class="weui_cell_hd"><label class="weui_label">银行卡</label></div>
+          <div class="weui_cell_bd weui_cell_primary">
+            <input class="weui_input" type="number" pattern="[0-9]*" placeholder="请输入银行卡号"/>
+          </div>
+        </div>
+        <div class="weui_cell weui_vcode weui_cell_warn">
+          <div class="weui_cell_hd"><label class="weui_label">验证码</label></div>
+          <div class="weui_cell_bd weui_cell_primary">
+            <input class="weui_input" type="number" placeholder="请输入验证码"/>
+          </div>
+          <div class="weui_cell_ft">
+            <i class="weui_icon_warn"></i>
+            <img src="./images/vcode.jpg" />
+          </div>
+        </div>
+      </div>
+      <div class="weui_cells_tips">底部说明文字底部说明文字</div>
+      <div class="weui_btn_area">
+        <a class="weui_btn weui_btn_primary" href="javascript:" id="showTooltips">确定</a>
+      </div>
+
+      <div class="weui_cells_title">上传</div>
+      <div class="weui_cells weui_cells_form">
+        <div class="weui_cell">
+          <div class="weui_cell_bd weui_cell_primary">
+            <div class="weui_uploader">
+              <div class="weui_uploader_hd weui_cell">
+                <div class="weui_cell_bd weui_cell_primary">图片上传</div>
+                <div class="weui_cell_ft">0/2</div>
+              </div>
+              <div class="weui_uploader_bd">
+                <ul class="weui_uploader_files">
+                  <li class="weui_uploader_file" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)"></li>
+                  <li class="weui_uploader_file" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)"></li>
+                  <li class="weui_uploader_file" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)"></li>
+                  <li class="weui_uploader_file weui_uploader_status" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)">
+                  <div class="weui_uploader_status_content">
+                    <i class="weui_icon_warn"></i>
+                  </div>
+                  </li>
+                  <li class="weui_uploader_file weui_uploader_status" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)">
+                  <div class="weui_uploader_status_content">50%</div>
+                  </li>
+                </ul>
+                <div class="weui_uploader_input_wrp">
+                  <input class="weui_uploader_input" type="file" accept="image/jpg,image/jpeg,image/png,image/gif" multiple />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="weui_cells_title">文本域</div>
+      <div class="weui_cells weui_cells_form">
+        <div class="weui_cell">
+          <div class="weui_cell_bd weui_cell_primary">
+            <textarea class="weui_textarea" placeholder="请输入评论" rows="3"></textarea>
+            <div class="weui_textarea_counter"><span>0</span>/200</div>
+          </div>
+        </div>
+      </div>
+      <div class="weui_toptips weui_warn js_tooltips">格式不对</div>
+      <div class="weui_cells_title">表单报错</div>
+      <div class="weui_cells weui_cells_form">
+        <div class="weui_cell weui_cell_warn">
+          <div class="weui_cell_hd"><label for="" class="weui_label">卡号</label></div>
+          <div class="weui_cell_bd weui_cell_primary">
+            <input class="weui_input" type="number" pattern="[0-9]*" value="weui input error" placeholder="请输入卡号"/>
+          </div>
+          <div class="weui_cell_ft">
+            <i class="weui_icon_warn"></i>
+          </div>
+        </div>
+        <div class="weui_cell">
+          <div class="weui_cell_hd"><label for="" class="weui_label">日期</label></div>
+          <div class="weui_cell_bd weui_cell_primary">
+            <input class="weui_input" type="date" value=""/>
+          </div>
+        </div>
+        <div class="weui_cell">
+          <div class="weui_cell_hd"><label for="" class="weui_label">时间</label></div>
+          <div class="weui_cell_bd weui_cell_primary">
+            <input class="weui_input" type="datetime-local" value="" placeholder=""/>
+          </div>
+        </div>
+      </div>
+      <div class="weui_cells_title">选择</div>
+      <div class="weui_cells">
+
+        <div class="weui_cell weui_cell_select weui_select_before">
+          <div class="weui_cell_hd">
+            <select class="weui_select" name="select2">
+              <option value="1">+86</option>
+              <option value="2">+80</option>
+              <option value="3">+84</option>
+              <option value="4">+87</option>
+            </select>
+          </div>
+          <div class="weui_cell_bd weui_cell_primary">
+            <input class="weui_input" type="number" pattern="[0-9]*" placeholder="请输入号码"/>
+          </div>
+        </div>
+      </div>
+      <div class="weui_cells_title">选择</div>
+      <div class="weui_cells">
+        <div class="weui_cell weui_cell_select">
+          <div class="weui_cell_bd weui_cell_primary">
+            <select class="weui_select" name="select1">
+              <option selected="" value="1">微信号</option>
+              <option value="2">QQ号</option>
+              <option value="3">Email</option>
+            </select>
+          </div>
+        </div>
+        <div class="weui_cell weui_cell_select weui_select_after">
+          <div class="weui_cell_hd">
+            国家/地区
+          </div>
+          <div class="weui_cell_bd weui_cell_primary">
+            <select class="weui_select" name="select2">
+              <option value="1">中国</option>
+              <option value="2">美国</option>
+              <option value="3">英国</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </script>
+  <script type="text/html" id="tpl_button">
+    <div class="hd">
+      <h1 class="page_title">Button</h1>
+    </div>
+    <div class="bd spacing">
+      <a href="javascript:;" class="weui_btn weui_btn_primary">按钮</a>
+      <a href="javascript:;" class="weui_btn weui_btn_disabled weui_btn_primary">按钮</a>
+      <a href="javascript:;" class="weui_btn weui_btn_warn">确认</a>
+      <a href="javascript:;" class="weui_btn weui_btn_disabled weui_btn_warn">确认</a>
+      <a href="javascript:;" class="weui_btn weui_btn_default">按钮</a>
+      <a href="javascript:;" class="weui_btn weui_btn_disabled weui_btn_default">按钮</a>
+      <div class="button_sp_area">
+        <a href="javascript:;" class="weui_btn weui_btn_plain_default">按钮</a>
+        <a href="javascript:;" class="weui_btn weui_btn_plain_primary">按钮</a>
+
+        <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_primary">按钮</a>
+        <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_default">按钮</a>
+      </div>
+    </div>
+  </script>
+  <script src="./javascripts/zepto.min.js"></script>
+  <script src="./javascripts/router.min.js"></script>
+  <script src="./javascripts/example.js"></script>
+</body>
+  </html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>聚箸</title>
+    <link rel="stylesheet" href="/stylesheets/weui.css"/>
+    <link rel="stylesheet" href="/stylesheets/example.css"/>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <link rel="stylesheet" href="/stylesheets/juzhu_shop.css"/>
+  </head>
+  <body style="overflow-y:hidden ">
+    <div class="weui_panel">
+      <div class="weui_panel_hd">订单记录</div>
+      <div class="weui_panel_bd" style="border-bottom:1px solid #C4C4C4">
+        {{#each allOders}}
+        <div class="weui_media_box weui_media_text">
+          <h4 class="weui_media_title">￥{{orderAmount}}
+            {{#if_eq pay_status 1}}
+            {{#if_eq charge_type "fanpiao"}}
+              <a order_id="{{orderID}}" class="weui_btn weui_btn_mini weui_btn_primary btn_rebuy" >重新购买</a></h4>
+            {{/if_eq}}
+            {{#if_eq charge_type "weixin"}}
+              <a order_id="{{orderID}}" class="weui_btn weui_btn_mini weui_btn_primary btn_repay" btn_action='{{charge_type}}' >去支付</a></h4>
+            {{/if_eq}}
+          {{/if_eq}}
+          {{#if_eq pay_status 2}}
+          <a order_id="{{orderID}}" class="weui_btn weui_btn_mini weui_btn_primary btn_rebuy" >再来一单</a></h4>
+        {{/if_eq}}
+        {{#each dishInfo}}
+        <p class="weui_media_desc order_item">{{dishName}} <span class='price_info'>￥{{totalAmount}}</span><span class="num_info">X{{num}}</span></p>
+        {{/each}}
+        <p class="weui_media_desc order_item">配送费 <span class='price_info'>￥{{diliveryInfo}}</span></p>
+        {{#each discountInfo}}
+        {{#if amount}}
+        <p class="weui_media_desc order_item">{{name}} <span class='price_info'>-￥{{amount}}</span></p>
+        {{/if}}
+        {{/each}}
+        <ul class="weui_media_info">
+          <li class="weui_media_info_meta">平台: 聚箸</li>
+          <li class="weui_media_info_meta">{{order_time}}</li>
+          {{#if_eq pay_status 1}}
+          <li class="weui_media_info_meta weui_media_info_meta_extra">未支付</li>
+          {{/if_eq}}
+          {{#if_eq pay_status 2}}
+          <li class="weui_media_info_meta weui_media_info_meta_extra">已支付</li>
+          {{/if_eq}}
+        </ul>
+      </div>
+      {{/each}}
+      {{#if noOrders}}
+      <div class='no_orders'><a href='/menu_list'>你还没有订单，去点一餐吧</a></div>
+      {{/if}}
+    </div>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        function onBridgeReady(request) {
+          if (typeof WeixinJSBridge !== "undefined"){
+            WeixinJSBridge.invoke('getBrandWCPayRequest', request, function(res){
+              if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                alert("pay success");
+                $(".clear_cart").trigger("click");
+                window.location.href='/orders';
+              }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+            });
+          } else {
+            alert("error WeixinJSBridge")
+          }
+        }
+
+        $(".btn_repay").click(function() {
+          // 订单信息
+          var orderId = $(this).attr("order_id");
+          alert("repay order_id: " + orderId);
+          $.get("/repay_id/" + orderId, function(data, err) {
+            if (err == 'success' && !data.error) {
+            alert(JSON.stringify(data));
+            onBridgeReady(data.h5Request);
+            } else if (err == "success") {
+            alert(data.error_msg);
+            } else {
+            alert(err);
+            }
+            });
+          })
+        $(".btn_rebuy").click(function() {
+          var orderId = $(this).attr("order_id")
+          window.location.href="/rebuy_order?order_id=" + orderId;
+          })
+      });
+
+</script>
+  </body>
+</html>

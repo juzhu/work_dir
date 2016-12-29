@@ -1,0 +1,416 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>聚箸</title>
+    <link rel="stylesheet" href="/stylesheets/weui.css"/>
+    <link rel="stylesheet" href="/stylesheets/juzhu_shop.css"/>
+    <link rel="stylesheet" href="/stylesheets/example.css"/>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  </head>
+  <body style="overflow-y:hidden">
+    <div class="container" id="container">
+
+      <div class='tabbar'>
+        <div class="weui_tab">
+          <div class="weui_tab_bd">
+            <div class="user_addr">
+              <div class="weui_cells_title">配送信息详情</div>
+              <div class="weui_cells weui_cells_access">
+                {{#userInfo}}
+                <a class="weui_cell" href="javascript:;">
+                  <div class="weui_cell_bd weui_cell_primary">
+                {{#if user_addr}}
+                  <p>配送地址: <span class='post_addr gray_info_modify'>{{user_addr}}</span></p>
+                  </div>
+                  <div class="weui_cell_ft gray_info">修改</div>
+                {{/if}}
+                {{^user_addr}}
+                  <p>配送地址: <span class='post_addr gray_info' id='add_addr'>请填写详细地址</span></p>
+                  </div>
+                  <div class="weui_cell_ft gray_info">添加</div>
+                {{/user_addr}}
+                </a>
+                <a class="weui_cell" href="javascript:;">
+                {{#if phone}}
+                  <div class="weui_cell_bd weui_cell_primary">
+                    <p>联系电话: <span class='post_phone gray_phone_info'>{{phone}}</span></p>
+                  </div>
+                  <div class="weui_cell_ft gray_info">修改</div>
+                {{/if}}
+                {{^phone}}
+                  <div class="weui_cell_bd weui_cell_primary">
+                    <p>联系电话: <span class='post_phone gray_phone_info'>请填写联系电话</span></p>
+                  </div>
+                  <div class="weui_cell_ft gray_info">添加</div>
+                {{/phone}}
+                </a>
+                {{/userInfo}}
+              </div>
+            </div>
+            <div class='menu_list_body'>
+              <div class="weui_cells_title" id='order_detail'>订单清单<a class='clear_cart'>清空</a></div>
+              <div class="weui_cells" id='menu_list_detail'>
+              </div>
+            </div>
+
+
+            <div class='btn_comfirm'>
+              <a id='submitOrder' class="weui_btn weui_btn_primary">微信支付</a>
+            </div>
+            <div class='btn_comfirm'>
+              <a id='submitFanPiaoOrder' btn_action='pay_fanpiao' class="weui_btn weui_btn_primary">买饭票，最高再打七折!</a>
+            </div>
+            <div class="weui_cells">
+              <div class="weui_cell">
+                <div class="weui_cell_bd weui_cell_primary">
+                  <p>饭票余额</p>
+                </div>
+                <div class="weui_cell_ft" id='fanpiao_amount' fanpiao_amount={{fanPiaoInfo.cur_amount}}>{{fanPiaoInfo.cur_amount}} 元</div>
+              </div>
+            </div>
+
+
+          </div>
+          <div class="weui_tabbar">
+            <a href="/menu_list" class="weui_tabbar_item weui_bar_item_on">
+              <div class="weui_tabbar_icon">
+                <img src="./images/icon_nav_button.png" alt="">
+              </div>
+              <p class="weui_tabbar_label">点餐</p>
+            </a>
+            <a href="/shop_cart" class="weui_tabbar_item">
+              <div class="weui_tabbar_icon">
+                <img src="./images/icon_nav_msg.png" alt="">
+              </div>
+              <p class="weui_tabbar_label">购物车</p>
+            </a>
+            <a href="/orders" class="weui_tabbar_item">
+              <div class="weui_tabbar_icon">
+                <img src="./images/icon_nav_article.png" alt="">
+              </div>
+              <p class="weui_tabbar_label">订单</p>
+            </a>
+            <a href="/mine" class="weui_tabbar_item">
+              <div class="weui_tabbar_icon">
+                <img src="./images/icon_nav_cell.png" alt="">
+              </div>
+              <p class="weui_tabbar_label">我</p>
+            </a>
+          </div>
+        </div>
+      </div>
+      <!--BEGIN actionSheet-->
+      <div id="buy_fanpiao_sheet">
+        <div class="weui_mask_transition" id="mask"></div>
+        <div class="weui_actionsheet" id="weui_actionsheet">
+          <div class="weui_actionsheet_menu">
+            {{#each fanPiaoConfig}}
+            <div class="weui_actionsheet_cell" onclick='buyFanPiao({{pay_amount}}, {{buy_amount}})'>充{{pay_amount}}得{{buy_amount}}</div>
+            {{/each}}
+          </div>
+          <div class="weui_actionsheet_action">
+            <div class="weui_actionsheet_cell" id="actionsheet_cancel">取消</div>
+          </div>
+        </div>
+      </div>
+      <!--END actionSheet-->
+      <!--BEGIN toast-->
+      <div id="toast" style="display: none;">
+        <div class="weui_mask_transparent"></div>
+        <div class="weui_toast">
+          <i class="weui_icon_toast"></i>
+          <p class="weui_toast_content">已完成</p>
+        </div>
+      </div>
+      <!--end toast-->
+
+      <script type='text/javascript'>
+        var user_order_menu = {};
+$(document).ready(function() {
+
+  user_order_menu = localStorage.userOrderInfo;
+
+  if (user_order_menu === undefined) {
+  // TODO展示购物车空
+  user_order_menu = {}
+
+  $("#menu_list_detail").remove();
+  var html = "<div class='empty_cart'>赶紧戳<a href='/menu_list'>这里</a>去选菜吧~~~~'</div>";
+  $(".menu_list_body").append(html);
+  $("#submitOrder").hide();
+  } else {
+  $.post("calculate_order",{userOrder:user_order_menu}, function(data, err) {
+    if (err == "success" && data.orderAmount > 0) {
+    var dishInfo = data.dishInfo;
+    for (dishIndex in dishInfo) {
+    var oneDish = dishInfo[dishIndex];
+    var html = "<div class='weui_cell'><div class='weui_cell_bd weui_cell_primary'><p>" + oneDish.dishName +
+    "</p></div> <div class='weui_cell_ft' prodName='"+oneDish.dishName +"' prodPrice='" + oneDish.price +
+    "'><a class='cart_num'>X" + oneDish.num + "</a><a class=dish_total_amount>" + oneDish.totalAmount + "</a></div></div>";
+    $("#menu_list_detail").append(html);
+    }
+    // 运费展示
+
+    if (data["diliveryInfo"]) {
+    var html = "<div class='weui_cell'><div class='weui_cell_bd weui_cell_primary'><p>运费</p></div> <div class='weui_cell_ft'>" + data["diliveryInfo"] + "</div></div>";
+    $("#menu_list_detail").append(html);
+    }
+    // 满减信息
+    var discountInfo = data['discountInfo'];
+    for (index in discountInfo) {
+    var oneDiscount = discountInfo[index];
+    if (oneDiscount.amount <= 0) {
+      continue;
+    }
+    var html = "<div class='weui_cell'><div class='weui_cell_bd weui_cell_primary'><p>" + oneDiscount.name + "</p></div> <div class='weui_cell_ft '>-" + oneDiscount.amount + "</div></div>";
+    $("#menu_list_detail").append(html);
+    }
+    // 总计
+
+    var html = "<div class='weui_cell'><div class='weui_cell_bd weui_cell_primary'><p>总计</p></div> <div class='weui_cell_ft'>" + data['orderAmount']+ "</div></div>";
+    $("#menu_list_detail").append(html);
+
+    // 检查饭票按钮余额是否足够
+    checkFanPiaoBtn(data['orderAmount']);
+    } else {
+      // 清空
+      $("#menu_list_detail").remove();
+      var html = "<div class='empty_cart'>赶紧戳<a href='/menu_list'>这里</a>去选菜吧~~~~'</div>";
+      $(".menu_list_body").append(html);
+      $("#submitOrder").hide();
+    } // if (err == "success" && data.totalAmount > 0)
+  });
+  }
+});
+
+function checkFanPiaoBtn(orderAmount) {
+  var fanpiaoAmount = $("#fanpiao_amount").attr("fanpiao_amount");
+  if (orderAmount > fanpiaoAmount) {
+    // 饭票不够 提示买饭票
+    $("#submitFanPiaoOrder").text("买饭票，最高再打七折!");
+    $("#submitFanPiaoOrder").attr("btn_action", "pay_fanpiao");
+  } else {
+    $("#submitFanPiaoOrder").text("饭票支付");
+    $("#submitFanPiaoOrder").attr("btn_action", "pay_order");
+  }
+}
+
+
+$(document).on("click", ".add-food", function() {
+  var num = parseInt($(this).prev().text());
+  var prodName = $(this).parent().attr("prodName");
+  var prodPrice = $(this).parent().attr("prodPrice");
+  addOneDish(prodName, prodPrice);
+  num = num + 1;
+  $(this).prev().text(num);
+  $(this).prev().css({visibility:"visible"});
+  $(this).prev().prev().css({visibility:"visible"});
+  });
+
+$(document).on("click", ".sub-food", function() {
+  var num = parseInt($(this).next().text());
+  var prodName = $(this).parent().attr("prodName");
+  var prodPrice = $(this).parent().attr("prodPrice");
+  removOneDish(prodName);
+  num = num - 1;
+  if (num <= 0) {
+  $(this).css({visibility:"hidden"});
+  $(this).next().css({visibility:"hidden"});
+  num = 0;
+  }
+  $(this).next().text(num)
+  });
+$(".clear_cart").click(function() {
+  delete localStorage.userOrderInfo;
+  $("#menu_list_detail").remove();
+  $(".empty_cart").remove();
+  var html = "<div class='empty_cart'>赶紧戳<a href='/menu_list'>这里</a>去选菜吧~~~~'</div>";
+  $(".menu_list_body").append(html);
+  $("#submitOrder").hide();
+  })
+
+function onBridgeReady(request, type) {
+  if (typeof WeixinJSBridge !== "undefined"){
+    WeixinJSBridge.invoke('getBrandWCPayRequest', request, function(res){
+      // alert(JSON.stringify(res));
+      if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+      // alert("pay success");
+      if (type == "fanpiao") {
+      window.location.reload();
+      } else {
+      $(".clear_cart").trigger("click");
+      window.location.href='/orders';
+      }
+      }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+      });
+  } else {
+    alert("error WeixinJSBridge")
+  }
+}
+
+function checkPostInfo() {
+  var addr = $(".post_addr").text();
+  var phone = $(".post_phone").text();
+  if (addr == "请填写详细地址" || addr.length <= 5) {
+    return false;
+  }
+  if (phone == "请填写联系电话" || phone.length != 11) {
+    return false;
+  }
+  return true;
+}
+
+$("#submitOrder").click(function() {
+  // 订单信息
+  if (!checkPostInfo()) {
+  alert('请完善配送信息');
+  return;
+  }
+  var orderInfo = localStorage.userOrderInfo;
+  $.post("/submit_order", {userOrder:orderInfo}, function(data, err) {
+    if (err == 'success' && !data.error) {
+    alert(JSON.stringify(data));
+    onBridgeReady(data, "order");
+    } else if (err == "success") {
+    alert(data.error_msg);
+    } else {
+    alert(err);
+    }
+    });
+  })
+$(document).on("blur", "#editUserInfo", function() {
+  var inputValue = $(this).val();
+  if (inputValue > "") {
+  var parentSpan = $(this).parent();
+  $.post("/wx_user/set_addr", {"addr":inputValue}, function(data, err) {
+    if (err == "success") {
+    } else {
+    alert("设置地址失败 请重试");
+    }
+    $(parentSpan).text(inputValue);
+    })
+  } else {
+  var parentSpan = $(this).parent();
+  $(parentSpan).text("请填写详细地址");
+  $(this).remove();
+  }
+  })
+$("#add_addr").click(function() {
+  var html = "<input id='editUserInfo' type='text' value=''/>"
+  $(this).html("")
+  $(this).append(html);
+  $("#editUserInfo").focus();
+  $("#editUserInfo").val($("#editUserInfo").val());
+  });
+
+$(".gray_info_modify").click(function() {
+  var curText = $(this).text();
+  $(this).text("");
+  var html = "<input id='editUserInfo' type='text' value='" + curText + "'/>"
+  $(this).append(html);
+  $("#editUserInfo").focus();
+  $("#editUserInfo").val($("#editUserInfo").val());
+  });
+
+
+$(".gray_phone_info").click(function() {
+  window.location.href="/addPhone/shop_cart";
+  })
+
+$("#submitFanPiaoOrder").click(function() {
+  var btn_action = $(this).attr("btn_action");
+  if (btn_action == "pay_order") {
+  payOrderByFanPiao()
+  } else {
+  showBuyFanPiaoMenu();
+  }
+  });
+
+function showBuyFanPiaoMenu() {
+  var mask = $('#mask');
+  var weuiActionsheet = $('#weui_actionsheet');
+  weuiActionsheet.addClass('weui_actionsheet_toggle');
+  mask.show()
+    .focus()//加focus是为了触发一次页面的重排(reflow or layout thrashing),使mask的transition动画得以正常触发
+    .addClass('weui_fade_toggle').one('click', function () {
+      hideActionSheet(weuiActionsheet, mask);
+      });
+  $('#actionsheet_cancel').one('click', function () {
+    hideActionSheet(weuiActionsheet, mask);
+    });
+  mask.unbind('transitionend').unbind('webkitTransitionEnd');
+
+  function hideActionSheet(weuiActionsheet, mask) {
+    weuiActionsheet.removeClass('weui_actionsheet_toggle');
+    mask.removeClass('weui_fade_toggle');
+    mask.on('transitionend', function () {
+      mask.hide();
+      }).on('webkitTransitionEnd', function () {
+      mask.hide();
+      })
+  }
+}
+
+function buyFanPiao(payAmount, buyAmount) {
+  alert("buy:" + buyAmount + " pay:" + payAmount);
+  $.get("/buy_fanpiao/" + payAmount + "/" + buyAmount, function(data, err) {
+    if (err == 'success' && !data.error) {
+    alert(JSON.stringify(data));
+    onBridgeReady(data, "fanpiao");
+    } else if (err == "success") {
+    alert(data.error_msg);
+    } else {
+    alert(err);
+    }
+    });
+}
+
+function payOrderByFanPiao() {
+  // 订单信息
+  if (!checkPostInfo()) {
+    alert('请完善配送信息');
+    return;
+  }
+  var orderInfo = localStorage.userOrderInfo;
+  toastLoadingStart()
+    $.post("/pay_order_with_fanpiao", {userOrder:orderInfo}, function(data, err) {
+      toastLoadingEnd();
+      if (err == 'success' && !data.error) {
+      toastComplete(function() {
+        $(".clear_cart").trigger("click");
+        window.location.href='/orders';
+        });
+      } else if (err == "success") {
+      alert(data.error_msg);
+      } else {
+      alert(err);
+      }
+      });
+}
+
+function toastComplete(cb) {
+  $('#toast').show();
+  setTimeout(function () {
+    $('#toast').hide();
+    if (cb) {cb()}
+    }, 2000);
+}
+
+function toastLoadingStart() {
+  $('#loadingToast').show();
+  setTimeout(function () {
+    }, 2000);
+}
+
+function toastLoadingEnd() {
+  $('#loadingToast').hide();
+}
+
+
+</script>
+  </body>
+</html>
+

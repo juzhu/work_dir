@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>聚箸</title>
+    <link rel="stylesheet" href="./stylesheets/weui.css"/>
+    <link rel="stylesheet" href="./stylesheets/example.css"/>
+  </head>
+  <body ontouchstart style="overflow-y:hidden ">
+      <div class="weui_panel">
+        <div class="weui_panel_hd">订单记录</div>
+          {{#each orderRecord}}
+          <!--<div class="weui_panel_bd" style="border-bottom:1px solid #C4C4C4"> -->
+          {{#if jifen_order}}
+          <div class="weui_panel_bd">
+            <div class="weui_media_box weui_media_text">
+              <h4 class="weui_media_title">-{{jifen_cost}}分</h4>
+              <p class="weui_media_desc">{{prod_name}}</p>
+              <ul class="weui_media_info">
+                <li class="weui_media_info_meta">聚箸</li>
+                <li class="weui_media_info_meta">积分余额: {{aval_point}}</li>
+                <li class="weui_media_info_meta weui_media_info_meta_extra">{{order_time}}</li>
+              </ul>
+            </div>
+          </div>
+          {{/if}}
+          {{#if rmb_order}}
+          <div class="weui_panel_bd">
+            <div class="weui_media_box weui_media_text">
+              <h4 class="weui_media_title">-{{point_price}}分</h4>
+              <p class="weui_media_desc">{prod_name}}</p>
+              <ul class="weui_media_info">
+                <li class="weui_media_info_meta">聚箸</li>
+                <li class="weui_media_info_meta">{{order_time}}</li>
+                <li class="weui_media_info_meta weui_media_info_meta_extra">账户余额: {{aval_balance}}</li>
+              </ul>
+            </div>
+          </div>
+          {{/if}}
+          {{/each}}
+        </div>
+      </div>
+      <script src="./javascripts/zepto.min.js"></script>
+      <script src="./javascripts/router.min.js"></script>
+      <!--<script src="./javascripts/example.js"></script> -->
+    </body>
+  </html>

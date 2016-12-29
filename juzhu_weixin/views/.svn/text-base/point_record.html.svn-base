@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>聚箸</title>
+    <link rel="stylesheet" href="./stylesheets/weui.css"/>
+    <link rel="stylesheet" href="./stylesheets/example.css"/>
+  </head>
+  <body ontouchstart style="overflow-y:hidden ">
+      {{#if userInfo.pointRecCnt}}
+      <div class="weui_panel">
+        <div class="weui_panel_hd">积分详情</div>
+        {{#each userInfo.pointHistory}}
+        <!--<div class="weui_panel_bd" style="border-bottom:1px solid #C4C4C4"> -->
+          <div class="weui_panel_bd">
+            <div class="weui_media_box weui_media_text">
+              <h4 class="weui_media_title">+{{order_point}}分</h4>
+              <p class="weui_media_desc">{{menu_list}}</p>
+              <ul class="weui_media_info">
+                <li class="weui_media_info_meta">{{order_platform}}</li>
+                <li class="weui_media_info_meta">{{order_time}}</li>
+                <li class="weui_media_info_meta weui_media_info_meta_extra">支付金额: Y{{price}}</li>
+              </ul>
+            </div>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+      {{/if}}
+
+    <script src="./javascripts/zepto.min.js"></script>
+    <script src="./javascripts/router.min.js"></script>
+    <!--<script src="./javascripts/example.js"></script> -->
+  </body>
+</html>

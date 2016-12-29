@@ -1,0 +1,87 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>聚箸</title>
+    <link rel="stylesheet" href="/stylesheets/weui.css"/>
+    <link rel="stylesheet" href="/stylesheets/juzhu_shop.css"/>
+    <link rel="stylesheet" href="/stylesheets/example.css"/>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  </head>
+  <body style="overflow-y:hidden">
+    <div class='menu_list_body'>
+      <div class="weui_cells_title">招牌菜,热销系列</div>
+      <div class="weui_cells">
+        <div class="weui_cell">
+          <div class="weui_cell_bd weui_cell_primary" >
+            <p>水煮鱼</p>
+          </div>
+          <div class="weui_cell_ft" prodId='10'><a class='prod-price'>￥48</a><a class='juzhu_icon sub-food j-add-inner'></a><a class="juzhu_icon dish_num j-add-inner" >0</a><a class='juzhu_icon add-food j-add-inner'></a></div>
+        </div>
+        <div class="weui_cell">
+          <div class="weui_cell_bd weui_cell_primary">
+            <p>标题文字</p>
+          </div>
+          <div class="weui_cell_ft">说明文字</div>
+        </div>
+        <div class="weui_cell">
+          <div class="weui_cell_bd weui_cell_primary">
+            <p>标题文字</p>
+          </div>
+          <div class="weui_cell_ft">说明文字</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="weui_tabbar">
+      <a href="#/shopList" class="weui_tabbar_item weui_bar_item_on">
+        <div class="weui_tabbar_icon">
+          <img src="./images/icon_nav_button.png" alt="">
+        </div>
+        <p class="weui_tabbar_label">点餐</p>
+      </a>
+      <a href="#/trolley" class="weui_tabbar_item">
+        <div class="weui_tabbar_icon">
+          <img src="./images/icon_nav_msg.png" alt="">
+        </div>
+        <p class="weui_tabbar_label">购物车</p>
+      </a>
+      <a href="#/" class="weui_tabbar_item">
+        <div class="weui_tabbar_icon">
+          <img src="./images/icon_nav_article.png" alt="">
+        </div>
+        <p class="weui_tabbar_label">积分</p>
+      </a>
+      <a href="#/shopList" class="weui_tabbar_item">
+        <div class="weui_tabbar_icon">
+          <img src="./images/icon_nav_cell.png" alt="">
+        </div>
+        <p class="weui_tabbar_label">我</p>
+      </a>
+    </div>
+    <script type='text/javascript'>
+      var user_order_menu = {};
+$(".add-food").click(function() {
+  var num = parseInt($(this).prev().text());
+  num = num + 1;
+  $(this).prev().text(num)
+  $(this).prev().show();
+  $(this).prev().prev().show();
+  });
+
+$(".sub-food").click(function() {
+  var num = parseInt($(this).next().text());
+  num = num - 1;
+  if (num <= 0) {
+  $(this).hide();
+  $(this).next().hide();
+  num = 0;
+  }
+  $(this).next().text(num)
+  });
+</script>
+  </body>
+</html>
+

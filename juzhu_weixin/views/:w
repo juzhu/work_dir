@@ -1,0 +1,233 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>聚箸</title>
+    <link rel="stylesheet" href="/stylesheets/weui.css"/>
+    <link rel="stylesheet" href="/stylesheets/juzhu_shop.css"/>
+    <link rel="stylesheet" href="/stylesheets/example.css"/>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  </head>
+  <body style="overflow-y:hidden">
+    <div class="container" id="container">
+
+      <div class='tabbar'>
+        <div class="weui_tab">
+          <div class="weui_tab_bd">
+            <div class="user_addr">
+              <div class="weui_cells_title">配送信息详情</div>
+              <div class="weui_cells weui_cells_access">
+                {{#userInfo}}
+                {{#user_addr}}
+                <a class="weui_cell" href="javascript:;">
+                  <div class="weui_cell_bd weui_cell_primary">
+                    <p>配送地址: {{user_addr}}</p>
+                  </div>
+                  <div class="weui_cell_ft">修改</div>
+                  {{/user_addr}}
+                  {{^user_addr}}
+                  <p>配送地址: 请填写详细地址</p>
+                  </div>
+                  <div class="weui_cell_ft">增加</div>
+                </a>
+                {{/user_addr}}
+                <a class="weui_cell" href="javascript:;">
+                  <div class="weui_cell_bd weui_cell_primary">
+                    <p>联系电话: {{phone}}</p>
+                  </div>
+                  <div class="weui_cell_ft">修改</div>
+                </a>
+                {{/userInfo}}
+              </div>
+            </div>
+            <div class='menu_list_body'>
+              <div class="weui_cells_title" id='order_detail'>订单清单<a class='clear_cart'>清空</a></div>
+              <div class="weui_cells" id='menu_list_detail'>
+              </div>
+            </div>
+
+
+            <div class='btn_comfirm'>
+              <a id='submitOrder' class="weui_btn weui_btn_primary">确认并支付</a>
+            </div>
+          </div>
+        <div class="weui_tabbar">
+          <a href="/menu_list" class="weui_tabbar_item weui_bar_item_on">
+            <div class="weui_tabbar_icon">
+              <img src="./images/icon_nav_button.png" alt="">
+            </div>
+            <p class="weui_tabbar_label">点餐</p>
+          </a>
+          <a href="/shop_cart" class="weui_tabbar_item">
+            <div class="weui_tabbar_icon">
+              <img src="./images/icon_nav_msg.png" alt="">
+            </div>
+            <p class="weui_tabbar_label">购物车</p>
+          </a>
+          <a href="/orders" class="weui_tabbar_item">
+            <div class="weui_tabbar_icon">
+              <img src="./images/icon_nav_article.png" alt="">
+            </div>
+            <p class="weui_tabbar_label">订单</p>
+          </a>
+          <a href="/mine" class="weui_tabbar_item">
+            <div class="weui_tabbar_icon">
+              <img src="./images/icon_nav_cell.png" alt="">
+            </div>
+            <p class="weui_tabbar_label">我</p>
+          </a>
+        </div>
+      </div>
+    </div>
+    <script type='text/javascript'>
+      var user_order_menu = {};
+function addOneDish(dishName, dishPrice) {
+  var dishInfo = user_order_menu[dishName];
+  if (dishInfo === undefined) {
+    dishInfo = {};
+    dishInfo.dishName = dishName;
+    dishInfo.dishPrice = dishPrice;
+    dishInfo.num = 1;
+  } else {
+    dishInfo.num += 1;
+  }
+  user_order_menu[dishName] = dishInfo;
+  localStorage.userOrderInfo = JSON.stringify(user_order_menu);
+  // alert(JSON.stringify(user_order_menu));
+}
+
+function removOneDish(dishName) {
+  var dishInfo = user_order_menu[dishName];
+  if (dishInfo !== undefined) {
+    dishInfo.num -= 1;
+    if (dishInfo.num < 0) dishInfo.num = 0;
+  }
+  user_order_menu[dishName] = dishInfo;
+  localStorage.userOrderInfo = JSON.stringify(user_order_menu);
+  // alert(JSON.stringify(user_order_menu));
+}
+$(document).ready(function() {
+
+  user_order_menu = localStorage.userOrderInfo;
+
+  if (user_order_menu === undefined) {
+    // TODO展示购物车空
+  user_order_menu = {}
+
+  $("#menu_list_detail").remove();
+  var html = "<div class='empty_cart'>赶紧戳<a href='/menu_list'>这里</a>去选菜吧~~~~'</div>";
+  $(".menu_list_body").append(html);
+  $("#submitOrder").hide();
+  } else {
+  $.post("calculate_order",{userOrder:user_order_menu}, function(data, err) {
+    if (err == "success" && data.orderAmount > 0) {
+    var dishInfo = data.dishInfo;
+    for (dishIndex in dishInfo) {
+    var oneDish = dishInfo[dishIndex];
+    var html = "<div class='weui_cell'><div class='weui_cell_bd weui_cell_primary'><p>" + oneDish.dishName +
+    "</p></div> <div class='weui_cell_ft' prodName='"+oneDish.dishName +"' prodPrice='" + oneDish.price +
+    "'><a class='cart_num'>X" + oneDish.num + "</a><a class=dish_total_amount>" + oneDish.totalAmount + "</a></div></div>";
+    $("#menu_list_detail").append(html);
+    }
+    // 运费展示
+
+    if (data["diliveryInfo"]) {
+    var html = "<div class='weui_cell'><div class='weui_cell_bd weui_cell_primary'><p>运费</p></div> <div class='weui_cell_ft'>" + data["diliveryInfo"] + "</div></div>";
+    $("#menu_list_detail").append(html);
+    }
+    // 满减信息
+    var discountInfo = data['discountInfo'];
+    for (index in discountInfo) {
+      var oneDiscount = discountInfo[index];
+      if (oneDiscount.amount <= 0) {
+        continue;
+      }
+      var html = "<div class='weui_cell'><div class='weui_cell_bd weui_cell_primary'><p>" + oneDiscount.name + "</p></div> <div class='weui_cell_ft '>-" + oneDiscount.amount + "</div></div>";
+      $("#menu_list_detail").append(html);
+    }
+    // 总计
+
+    var html = "<div class='weui_cell'><div class='weui_cell_bd weui_cell_primary'><p>总计</p></div> <div class='weui_cell_ft'>" + data['orderAmount']+ "</div></div>";
+    $("#menu_list_detail").append(html);
+    } else {
+      // 清空
+      $("#menu_list_detail").remove();
+      var html = "<div class='empty_cart'>赶紧戳<a href='/menu_list'>这里</a>去选菜吧~~~~'</div>";
+      $(".menu_list_body").append(html);
+      $("#submitOrder").hide();
+    } // if (err == "success" && data.totalAmount > 0)
+  });
+  }
+});
+
+
+$(document).on("click", ".add-food", function() {
+  var num = parseInt($(this).prev().text());
+  var prodName = $(this).parent().attr("prodName");
+  var prodPrice = $(this).parent().attr("prodPrice");
+  addOneDish(prodName, prodPrice);
+  num = num + 1;
+  $(this).prev().text(num);
+  $(this).prev().css({visibility:"visible"});
+  $(this).prev().prev().css({visibility:"visible"});
+  });
+
+$(document).on("click", ".sub-food", function() {
+  var num = parseInt($(this).next().text());
+  var prodName = $(this).parent().attr("prodName");
+  var prodPrice = $(this).parent().attr("prodPrice");
+  removOneDish(prodName);
+  num = num - 1;
+  if (num <= 0) {
+  $(this).css({visibility:"hidden"});
+  $(this).next().css({visibility:"hidden"});
+  num = 0;
+  }
+  $(this).next().text(num)
+  });
+$(".clear_cart").click(function() {
+    delete localStorage.userOrderInfo;
+    $("#menu_list_detail").remove();
+    $(".empty_cart").remove();
+    var html = "<div class='empty_cart'>赶紧戳<a href='/menu_list'>这里</a>去选菜吧~~~~'</div>";
+    $(".menu_list_body").append(html);
+    $("#submitOrder").hide();
+    })
+
+function onBridgeReady(request) {
+  if (typeof WeixinJSBridge !== "undefined"){
+    WeixinJSBridge.invoke('getBrandWCPayRequest', request, function(res){
+      alert(JSON.stringify(res));
+      if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+      alert("pay success");
+      $(".clear_cart").trigger("click");
+      window.location.href='/orders';
+      }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+    });
+  } else {
+    alert("error WeixinJSBridge")
+  }
+}
+
+$("#submitOrder").click(function() {
+  // 订单信息
+  alert("submitOrder")
+  var orderInfo = localStorage.userOrderInfo;
+  $.post("/submit_order", {userOrder:orderInfo}, function(data, err) {
+    if (err == 'success' && !data.error) {
+      alert(JSON.stringify(data));
+      onBridgeReady(data);
+    } else if (err == "success") {
+      alert(data.error_msg);
+    } else {
+      alert(err);
+    }
+  });
+})
+
+</script>
+  </body>
+</html>
+
