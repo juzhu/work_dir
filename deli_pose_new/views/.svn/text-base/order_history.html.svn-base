@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>历史订单</title>
+    <link rel="stylesheet" href="/stylesheets/weui.css"/>
+  </head>
+  <body>
+    {{#each orders}}
+    <div class="weui-form-preview">
+      <div class="weui-form-preview__hd">
+        <label class="weui-form-preview__label">{{store_name}}</label>
+        <em class="weui-form-preview__value">{{order_platform}}--{{order_index}}</em>
+      </div>
+      <div class="weui-form-preview__bd">
+        <div class="weui-form-preview__item">
+          <label class="weui-form-preview__label">客户姓名</label>
+          <span class="weui-form-preview__value">{{user_name}}</span>
+        </div>
+        <div class="weui-form-preview__item">
+          <label class="weui-form-preview__label">联系电话</label>
+          <span class="weui-form-preview__value">{{phone}}</span>
+        </div>
+        <div class="weui-form-preview__item">
+          <label class="weui-form-preview__label">下单时间</label>
+          <span class="weui-form-preview__value">{{order_time}}</span>
+        </div>
+        <div class="weui-form-preview__item">
+          <label class="weui-form-preview__label">客户地址</label>
+          <span class="weui-form-preview__value">{{addr}}</span>
+        </div>
+        {{#if comment}}
+        <div class="weui-form-preview__item">
+          <label class="weui-form-preview__label">备注</label>
+          <span class="weui-form-preview__value">{{comment}}</span>
+        </div>
+        {{/if}}
+
+      </div>
+      <div class="weui-form-preview__ft">
+        <a class="weui-form-preview__btn weui-form-preview__btn_default" href="http://apis.map.qq.com/tools/poimarker?type=0&marker=coord:{{lat}},{{lng}};title:{{order_platform}}--{{order_index}};addr:{{addr}}|coord:{{#if_eq store_name '坪洲店'}} 22.566597,113.870534 {{/if_eq}}{{#if_eq store_name '前进店'}} 22.605990,113.863893{{/if_eq}};title:店铺;addr:聚箸({{store_name}})&key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77&referer=myapp">查看地图</a>
+      </div>
+    </div>
+    <br>
+    {{/each}}
+    {{#if_eq order_num 0}}
+    <div>没有记录</div>
+    {{/if_eq}}
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+  </body>
+  </html>

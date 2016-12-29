@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>聚箸配送</title>
+    <link rel="stylesheet" href="../stylesheets/weui.css"/>
+    <style>
+      .container, .page {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+      .page__hd {
+        padding:40px;
+        background-color: #f8f8f8;
+      }
+      .page__title{text-align:left;font-size:20px;font-weight:400}
+      .page__desc{margin-top:5px;color:#888;text-align:left;font-size:14px}
+      .page__title{margin-bottom:15px}
+
+
+    </style>
+
+  </head>
+  <body ontouchstart>
+    <div class="page">
+      <div class="page__bd" style="height: 100%;">
+        <div class="weui-tab">
+          <div class="weui-tab__panel" id='main_page'>
+            <!--tabbar-->
+          </div>
+          <div class="weui-tabbar">
+            <a href="javascript:orderSquear()" class="weui-tabbar__item weui-bar__item_on">
+              <img src="./images/icon_tabbar.png" alt="" class="weui-tabbar__icon">
+              <p class="weui-tabbar__label">广场</p>
+            </a>
+            <a href="javascript:myTask()" class="weui-tabbar__item">
+              <img src="./images/icon_tabbar.png" alt="" class="weui-tabbar__icon">
+              <p class="weui-tabbar__label">配送</p>
+            </a>
+            <a href="javascript:myPreview()" class="weui-tabbar__item">
+              <img src="./images/icon_tabbar.png" alt="" class="weui-tabbar__icon">
+              <p class="weui-tabbar__label">我的</p>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 弹窗操作确认-->
+    <div class="js_dialog" id="op_complete_dialog" style="opacity: 0; display: none;">
+      <div class="weui-mask"></div>
+      <div class="weui-dialog weui-skin_android">
+        <div class="weui-dialog__bd" id='complete_content'>
+        </div>
+        <div class="weui-dialog__ft">
+          <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" id='op_cancel'>取消</a>
+          <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" id='op_comfirm'>确定</a>
+        </div>
+      </div>
+    </div>
+    <!-- 弹窗结束 -->
+    <!-- 备注输入 -->
+    <div class="js_dialog" id="comment_input_dialog" style="opacity: 0; display: none;">
+      <div class="weui-mask"></div>
+      <div class="weui-dialog weui-skin_android">
+        <div class="weui-dialog__bd">
+          <div class="weui-panel">
+            <div class="weui-panel__bd">
+              <div class="weui-media-box weui-media-box_small-appmsg">
+                <div class="weui-cells">
+                  <a class="weui-cell weui-cell_access" id="order_comment" href="javascript:checkOrderPos()">
+                    <div class="weui-cell__hd"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAMAAABgZ9sFAAAAVFBMVEXx8fHMzMzr6+vn5+fv7+/t7e3d3d2+vr7W1tbHx8eysrKdnZ3p6enk5OTR0dG7u7u3t7ejo6PY2Njh4eHf39/T09PExMSvr6+goKCqqqqnp6e4uLgcLY/OAAAAnklEQVRIx+3RSRLDIAxE0QYhAbGZPNu5/z0zrXHiqiz5W72FqhqtVuuXAl3iOV7iPV/iSsAqZa9BS7YOmMXnNNX4TWGxRMn3R6SxRNgy0bzXOW8EBO8SAClsPdB3psqlvG+Lw7ONXg/pTld52BjgSSkA3PV2OOemjIDcZQWgVvONw60q7sIpR38EnHPSMDQ4MjDjLPozhAkGrVbr/z0ANjAF4AcbXmYAAAAASUVORK5CYII=" alt="" style="width:20px;margin-right:5px;display:block"></div>
+                    <div class="weui-cell__bd weui-cell_primary">
+                      <p id='get_gps_title'></p>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+          <div class="weui-cells weui-cells_form">
+            <div class="weui-cell">
+              <div class="weui-cell__bd">
+                <textarea class="weui-textarea" placeholder="请输入文本" rows="3"></textarea>
+                <div class="weui-textarea-counter"><span>0</span>/200</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="weui-dialog__ft">
+          <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" id='op_cancel'>取消</a>
+          <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" id='op_comfirm'>确定</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 输入结束 !-->
+    <script src="./javascripts/zepto.min.js"></script>
+    <script src="./javascripts/juzhu.js"></script>
+    <script src="./js/login.js"></script>
+    <script charset="utf-8" src="http://map.qq.com/api/js?v=2.exp&libraries=convertor,geometry"></script>
+
+    <script type="text/javascript">
+      $(function(){
+        $('.weui-tabbar__item').on('click', function () {
+          $(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+          });
+        }
+       );
+      $(document).ready(function() {
+        // orderSquear();
+        var lastLat = 0;
+        var lastLng = 0;
+        function locateSuccess(result) {
+        var myLocate = new qq.maps.LatLng(result.coords.latitude, result.coords.longitude) ;
+        qq.maps.convertor.translate(myLocate, 1, function(res) {
+          myLocate = res[0];
+          if (lastLat != myLocate.lat || lastLng != myLocate.lng) {
+          $.get("/update_user_gps/" + myLocate.lat + "/" + myLocate.lng, function(data, success) {
+            });
+          lastLat = myLocate.lat;
+          lastLng = myLocate.lng;
+          }
+          })
+        setTimeout(getLocate, 20000);
+        }
+        checkUrHashJump();
+        function locateError(error) {
+        console.log(error);
+        setTimeout(getLocate, 20000);
+        }
+        function getLocate() {
+          navigator.geolocation.getCurrentPosition(locateSuccess, locateError, {
+enableHighAcuracy: true,
+timeout: 5000,
+maximumAge: 20000,
+});
+}
+getLocate();
+});
+</script>
+
+<script type="text/html" id="tpl_order_squear">
+  <div class="page">
+    <div class="page__bd" style="height: 100%;">
+      <div class="weui-tab">
+        <div class="weui-navbar">
+          <div class="weui-navbar__item weui-bar__item_on" tab_type="wait_send">
+            等待配送
+          </div>
+          <div class="weui-navbar__item" tab_type='wait_recycle'>
+            等待回收
+          </div>
+          <div class="weui-navbar__item" tab_type='today_all'>
+           今日所有
+          </div>
+        </div>
+        <div class="weui-tab__panel" id='order_squear_content'>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type='text/javascript'>
+    var cur_type = "";
+    var type = $(".weui-navbar__item.weui-bar__item_on").attr('tab_type');
+    // orderWaitList(type, 0 , 0);
+    var hash = window.location.hash;
+    if (hash.charAt(0) == "#") {
+      hash = hash.substr(1);
+    }
+    var hashArray = hash.split("#");
+    var secondPage = "wait_send";
+    if (hashArray.length > 1) {
+      secondPage = hashArray[1];
+    }
+    // orderWaitList(secondPage, 0, 0);
+    $(".weui-navbar__item").click(function() {
+      type = $(this).attr("tab_type");
+      if (type != cur_type) {
+      orderWaitList(type, 0, 0);
+      cur_type = type;
+      $(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+      }
+      })
+
+    $(".weui-navbar__item").each(function(obj) {
+      if ($(this).attr("tab_type") == secondPage) {
+        $(this).click();
+        cur_type = type;
+      }
+    });
+    </script>
+
+  </script>
+
+  <script type="text/html" id="tpl_my_task">
+    <div class="page">
+      <div class="page__bd" style="height: 100%;">
+        <div class="weui-tab">
+          <div class="weui-navbar">
+            <div class="weui-navbar__item weui-bar__item_on" tab_type='order_sending'>
+              配送中
+            </div>
+            <div class="weui-navbar__item" tab_type='order_recycling'>
+              回收中
+            </div>
+          </div>
+          <div class="weui-tab__panel" id='my_task_content'>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type='text/javascript'>
+      var cur_type = "";
+      // myTaskList(type, 0 , 0);
+      var hash = window.location.hash;
+      if (hash.charAt(0) == "#") {
+        hash = hash.substr(1);
+      }
+      var hashArray = hash.split("#");
+      var secondPage = "order_recycling";
+      if (hashArray.length > 1) {
+        secondPage = hashArray[1];
+      }
+      $(".weui-navbar__item").click(function() {
+        type = $(this).attr("tab_type");
+        if (type != cur_type) {
+          myTaskList(type, 0, 0);
+          cur_type = type;
+          $(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+          }
+        })
+      $(".weui-navbar__item").each(function(obj) {
+        if ($(this).attr("tab_type") == secondPage) {
+          $(this).click();
+        }
+      });
+      </script>
+    </script>
+
+    <!-- 我的页面 -->
+    <script type="text/html" id="tpl_my_preview">
+      <style type="text/css">
+        input
+        {
+          border-top:0px ;
+          border-left:0px ;
+          border-right:0px ;
+        }
+      </style>
+
+      <div class="page__hd">
+        <h1 class="page__title">配送概要</h1>
+        <p class="page__desc" id="post_user"></p>
+      </div>
+      <div class="page__bd">
+        <div class="weui-form-preview">
+          <div class="weui-form-preview__hd">
+            <div class="weui-form-preview__item">
+              <em class="weui-form-preview__value">今日配送统计</em>
+            </div>
+          </div>
+          <div class="weui-form-preview__bd">
+            <div class="weui-form-preview__item">
+              <label class="weui-form-preview__label"><a href='/day_detail/post'>配送完成</a> </label>
+              <span class="weui-form-preview__value" id="sended_today" />
+              </div>
+              <div class="weui-form-preview__item">
+                <label class="weui-form-preview__label"><a href='/day_detail/recycle'>回收完成<a/></label>
+                <span class="weui-form-preview__value" id="recycled_today" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <br>
+
+          <div class="weui-cells__title"></div>
+          <div class="weui-cells__title">本年月份配送记录</div>
+          <div class="weui-cells">
+            <div class="weui-cell weui-cell_select">
+              <div class="weui-cell__bd">
+                <select class="weui-select" id="query_history">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                  <option value="11">11</option>
+                  <option value="12">12</option>
+                </select>
+              </div>
+            </div>
+            <div class="page__bd">
+              <div class="weui-form-preview">
+                <div class="weui-form-preview__hd">
+                  <div class="weui-form-preview__item">
+                    <em class="weui-form-preview__value">历史配送统计</em>
+                  </div>
+                </div>
+                <div class="weui-form-preview__bd">
+                  <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">配送完成</label>
+                    <span class="weui-form-preview__value" id="sended_history">--</span>
+                  </div>
+                  <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">回收完成</label>
+                    <span class="weui-form-preview__value" id="recycled_history">--</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br/>
+            <a href="javascript:logout();" class="weui-btn weui-btn_primary">退出登录</a>
+          </div>
+
+          <script type='text/javascript'>
+
+            $(function () {
+              $.get("/post_user_achievement", function(ret, err) {
+                if (!ret.error) {
+                $("#post_user").html("配送员:" + ret.userName);
+                $("#sended_today").text(ret.daySum.sendAmount);
+                $("#recycled_today").text(ret.daySum.recyclingAmount);
+                } else {
+                alert("获取数据失败");
+                }
+                }, 'json');
+
+              var d = new Date();
+              var mon = d.getMonth() + 1;
+
+              $('#query_history')[0].selectedIndex = mon - 1;
+
+              $.get("/post_user_achievement_history/"+mon , function(ret, err) {
+                if (!ret.error) {
+                $("#sended_history").text(ret.monSum.sendAmount);
+                $("#recycled_history").text(ret.monSum.recyclingAmount);
+                } else {
+                alert("获取数据失败");
+                }
+                }, 'json');
+
+            });
+
+
+$("#query_history").bind("change",function() {
+  var selectMon = $(this).val();
+  $.get("/post_user_achievement_history/"+selectMon , function(ret, err) {
+    if (!ret.error) {
+    $("#sended_history").text(ret.monSum.sendAmount);
+    $("#recycled_history").text(ret.monSum.recyclingAmount);
+    } else {
+    alert("获取数据失败");
+    }
+    }, 'json');
+  });
+
+
+</script>
+
+</script>
+
+  </body>
+</html>

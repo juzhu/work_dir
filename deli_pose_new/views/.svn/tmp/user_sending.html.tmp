@@ -1,0 +1,47 @@
+{{#each orders}}
+<div class="weui-form-preview">
+  <div class="weui-form-preview__hd">
+    <label class="weui-form-preview__label">{{store_name}}</label>
+    <em class="weui-form-preview__value">{{order_platform}}--{{order_index}}</em>
+  </div>
+  <div class="weui-form-preview__bd">
+    <div class="weui-form-preview__item">
+      <label class="weui-form-preview__label">客户姓名</label>
+      <span class="weui-form-preview__value">{{user_name}}</span>
+    </div>
+    <div class="weui-form-preview__item">
+      <label class="weui-form-preview__label">联系电话</label>
+      <span class="weui-form-preview__value">{{phone}}</span>
+    </div>
+   <div class="weui-form-preview__item">
+      <label class="weui-form-preview__label">下单时间</label>
+      <span class="weui-form-preview__value">{{order_time}}</span>
+    </div>
+    <div class="weui-form-preview__item">
+      <label class="weui-form-preview__label">客户地址</label>
+      <span class="weui-form-preview__value">{{addr}}</span>
+    </div>
+    {{#if comment}}
+    <div class="weui-form-preview__item">
+      <label class="weui-form-preview__label">备注</label>
+      <span class="weui-form-preview__value" id='{{order_id}}_comment'>{{comment}}</span>
+    </div>
+    {{/if}}
+  </div>
+  <div class="weui-form-preview__ft">
+    <a class="weui-form-preview__btn weui-form-preview__btn_default"  uriPri="http://apis.map.qq.com/uri/v1/routeplan?type=drive" toOrder="&to={{addr}}&tocoord={{lat}},{{lng}}" onclick='openLocation(this)'>查看地图</a>
+    <button type="submit" class="weui-form-preview__btn weui-form-preview__btn_primary" onclick="EditComment('{{order_id}}', '{{lat}}', '{{lng}}')">备注</button>
+    {{#if_eq post_status 1}}
+    <button type="submit" class="weui-form-preview__btn weui-form-preview__btn_primary" onclick="sendComplete(this, '{{order_id}}')">送达</button>
+    {{/if_eq}}
+    {{#if_eq recycle_status 1}}
+    <button type="submit" class="weui-form-preview__btn weui-form-preview__btn_primary" onclick="recycleComplete(this, '{{order_id}}')">收完</button>
+    {{/if_eq}}
+  </div>
+</div>
+{{/each}}
+<br>
+<br>
+<br>
+<br>
+<br>

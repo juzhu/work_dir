@@ -1,0 +1,57 @@
+<html>
+  <style>
+  #map_container {
+    min-width:100%;
+    min-height:80%;
+    float:left;
+    margin-left :auto;
+    margin-right:auto;
+  }
+
+  </style>
+  <script charset="utf-8" src="http://map.qq.com/api/js?v=2.exp"></script>
+  <body>
+    <div id='map_container'></div>
+    <script type='text/javascript'>
+      var geocoder,map,marker, icon = null;
+      var nomalIcon;
+      var selectIcon;
+      var dragIcon;
+      var init = function() {
+        var center = new qq.maps.LatLng({{store.lat}},{{store.lng}});
+        var orderPos = new qq.maps.LatLng({{order.lat}},{{order.lng}});
+        map = new qq.maps.Map(document.getElementById('map_container'),{
+          center: center,
+          zoom: 17,
+          });
+
+        var anchor = new qq.maps.Point(6, 6);
+        var size = new qq.maps.Size(24, 24);
+        var origin = new qq.maps.Point(0, 0);
+        var storeIcon = new qq.maps.MarkerImage('/images/center.gif', size, origin);;
+
+        origin = new qq.maps.Point(0, 0);
+        anchor = new qq.maps.Point(1, 0);
+        size = new qq.maps.Size(35, 35);
+        selectIcon = new qq.maps.MarkerImage('/images/order_red.png', size, origin);
+        normalIcon = new qq.maps.MarkerImage('/images/order_org.png', size, origin);
+        dragIcon = new qq.maps.MarkerImage('/images/order_black.png', size, origin);
+
+        var marker = new qq.maps.Marker({
+          icon: storeIcon,
+          map:map,
+          position: center,
+          zIndex: 10000,
+        });
+        var order_marker = new qq.maps.Marker({
+          icon: normalIcon,
+          map:map,
+          position: orderPos,
+          zIndex: 10000,
+        });
+      }
+      init();
+
+</script>
+  </body>
+</html>

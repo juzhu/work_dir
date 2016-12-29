@@ -1,0 +1,44 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/data/node/node-v5.0.0-linux-x64/bin/node',
+1 verbose cli   '/root/bin/npm',
+1 verbose cli   'start' ]
+2 info using npm@3.3.6
+3 info using node@v5.0.0
+4 verbose run-script [ 'prestart', 'start', 'poststart' ]
+5 info lifecycle deli_pos_web@0.0.0~prestart: deli_pos_web@0.0.0
+6 silly lifecycle deli_pos_web@0.0.0~prestart: no script for prestart, continuing
+7 info lifecycle deli_pos_web@0.0.0~start: deli_pos_web@0.0.0
+8 verbose lifecycle deli_pos_web@0.0.0~start: unsafe-perm in lifecycle true
+9 verbose lifecycle deli_pos_web@0.0.0~start: PATH: /data/node/node-v5.0.0-linux-x64/lib/node_modules/npm/bin/node-gyp-bin:/data/deli_pose_new/node_modules/.bin:/opt/erlang/bin:/opt/erlang/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin:/root/bin:/root/bin:/root/bin
+10 verbose lifecycle deli_pos_web@0.0.0~start: CWD: /data/deli_pose_new
+11 silly lifecycle deli_pos_web@0.0.0~start: Args: [ '-c', 'node ./bin/deli_pos_web' ]
+12 silly lifecycle deli_pos_web@0.0.0~start: Returned: code: 1  signal: null
+13 info lifecycle deli_pos_web@0.0.0~start: Failed to exec start script
+14 verbose stack Error: deli_pos_web@0.0.0 start: `node ./bin/deli_pos_web`
+14 verbose stack Exit status 1
+14 verbose stack     at EventEmitter.<anonymous> (/data/node/node-v5.0.0-linux-x64/lib/node_modules/npm/lib/utils/lifecycle.js:233:16)
+14 verbose stack     at emitTwo (events.js:87:13)
+14 verbose stack     at EventEmitter.emit (events.js:172:7)
+14 verbose stack     at ChildProcess.<anonymous> (/data/node/node-v5.0.0-linux-x64/lib/node_modules/npm/lib/utils/spawn.js:24:14)
+14 verbose stack     at emitTwo (events.js:87:13)
+14 verbose stack     at ChildProcess.emit (events.js:172:7)
+14 verbose stack     at maybeClose (internal/child_process.js:818:16)
+14 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:211:5)
+15 verbose pkgid deli_pos_web@0.0.0
+16 verbose cwd /data/deli_pose_new
+17 error Linux 2.6.32-504.el6.x86_64
+18 error argv "/data/node/node-v5.0.0-linux-x64/bin/node" "/root/bin/npm" "start"
+19 error node v5.0.0
+20 error npm  v3.3.6
+21 error code ELIFECYCLE
+22 error deli_pos_web@0.0.0 start: `node ./bin/deli_pos_web`
+22 error Exit status 1
+23 error Failed at the deli_pos_web@0.0.0 start script 'node ./bin/deli_pos_web'.
+23 error This is most likely a problem with the deli_pos_web package,
+23 error not with npm itself.
+23 error Tell the author that this fails on your system:
+23 error     node ./bin/deli_pos_web
+23 error You can get their info via:
+23 error     npm owner ls deli_pos_web
+23 error There is likely additional logging output above.
+24 verbose exit [ 1, true ]
