@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>定位+坐标转换</title>
+    <style type="text/css">
+      *{
+        margin:0px;
+        padding:0px;
+      }
+      body, button, input, select, textarea {
+        font: 12px/16px Verdana, Helvetica, Arial, sans-serif;
+      }
+      #container{
+        min-width:600px;
+        min-height:767px;
+      }
+    </style>
+    <script charset="utf-8" src="http://map.qq.com/api/js?v=2.exp&libraries=convertor"></script>
+    <script charset="utf-8" src="http://map.qq.com/api/js?v=2.exp&libraries=convertor"></script>
+    <script type='text/javascript' src='/javascripts/jquery/jquery-1.12.0.min.js'></script>
+    <script>
+      function getLocation(){
+        //判断是否支持 获取本地位置
+        if (navigator.geolocation)
+        {
+          navigator.geolocation.getCurrentPosition(showPosition);
+        }
+        else{x.innerHTML="浏览器不支持定位.";}
+      }
+      function showPosition(position)
+      {
+        var lat=position.coords.latitude;
+        var lng=position.coords.longitude;
+        lat = 22.618505;
+        lng = 113.860135;
+
+        // lat = 22.5916721;
+        // lng = 113.8710477;
+        //调用地图命名空间中的转换接口   type的可选值为 1:gps经纬度，2:搜狗经纬度，3:百度经纬度，4:mapbar经纬度，5:google经纬度，6:搜狗墨卡托
+        qq.maps.convertor.translate(new qq.maps.LatLng(lat,lng), 1, function(res){
+          //取出经纬度并且赋值
+          latlng = res[0];
+          var map = new qq.maps.Map(document.getElementById("container"),{
+            center:  latlng,
+            zoom: 15
+          });
+          //设置marker标记
+          var marker = new qq.maps.Marker({
+            map : map,
+            position : latlng
+          });
+        });
+      }
+      function showPositionDirect()
+      {
+        var lat=22.618505;
+        var lng=113.860135;
+        //调用地图命名空间中的转换接口   type的可选值为 1:gps经纬度，2:搜狗经纬度，3:百度经纬度，4:mapbar经纬度，5:google经纬度，6:搜狗墨卡托
+        $.getJSON('/order/wait2back/all', function(resp, status) {
+          var pos_arr = [];
+          for (index in resp) {
+            pos_arr.push(resp[index]);
+          }
+
+          var count_index = 0;
+          var map;
+          pos_arr.forEach(function(pos_info) {
+            var lat = parseFloat(pos_info[1]/1000000);
+            var lng = parseFloat(pos_info[2]/1000000);
+            alert(lat + "," + lng);
+            qq.maps.convertor.translate(new qq.maps.LatLng(lat, lng), 1, function(res) {
+              //取出经纬度并且赋值
+              latlng = res[0];
+              if (count_index++ == 0) {
+                map = new qq.maps.Map(document.getElementById("container"),{
+                  center:  latlng,
+                  zoom: 13
+                });
+              }
+              //设置marker标记
+              var marker = new qq.maps.Marker({
+                title: pos_info[3] + pos_info[4] + pos_info[5],
+                map : map,
+                position : latlng
+              });
+            });
+          });
+        });
+      }
+    </script>
+
+  </head>
+  <body onload="showPositionDirect()">
+    <input type=text id='name'></input>
+    <div id="container"></div>
+  </body>
+</html>
