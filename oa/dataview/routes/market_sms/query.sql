@@ -1,0 +1,1 @@
+select o.phone,o.order_time,m.send_time from sms_record as m left join juzhu.order_position as o on m.phone=o.phone where batch_id='f38c6a18-1cb0-4c15-b80e-a77fe543f545' and m.send_time<o.order_time limit 10;

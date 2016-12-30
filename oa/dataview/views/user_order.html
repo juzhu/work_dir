@@ -1,0 +1,124 @@
+      <div class="row-fluid">
+        <div class="box span12">
+          <div class="box-header">
+            <h2><i class="icon-align-justify"></i><span class="break"></span>用户{{phone}}所有订单</h2>
+            <div class="box-icon">
+              <a href="#" class="btn-minimize"><i class="icon-chevron-up"></i></a>
+              <a href="#" class="btn-close"><i class="icon-remove"></i></a>
+            </div>
+          </div>
+          <div class="box-content">
+            <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>时间</th>      
+                    <th>地址</th>
+                    <th>订单价格</th>
+                    <th>菜单</th>
+                    <th>平台</th>
+                    <th>备注</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {{#each items}}
+                  <tr>
+                    <td class="center">{{order_time}}</td>
+                    <td class="center">{{addr}}</td>
+                    <td class="center">{{price}}</td>
+                    <td class="center">{{menu_list}}</td>
+                    <td class="center">{{platform}}</td>
+                    <td class="center">{{comment}}</td>
+                  </tr>
+                  {{/each}}
+                </tbody>
+             </table>
+          </div>
+        </div><!--/span-->
+      </div><!--/row-->
+
+
+      <div class="row-fluid">
+
+        <div class="box">
+          <div class="box-header">
+            <h2><i class="icon-list-alt"></i><span class="break"></span>统计曲线</h2>
+            <div class="box-icon">
+              <a href="#" class="btn-minimize"><i class="icon-chevron-up"></i></a>
+              <a href="#" class="btn-close"><i class="icon-remove"></i></a>
+            </div>
+          </div>
+          <div class="box-content">
+            <div>
+              <div class="actions" style="float:right">
+                <button type="button" class="btn btn-success btn-next" data-last="Finish" id="btn_go_interface_page">
+                  查看接口详情 <i class="icon-arrow-right"></i>
+                </button>
+                <button type="button" class="btn btn-success btn-next" data-last="Finish" id="btn_go_heartbeat_config">
+                  服务心跳监控 <i class="icon-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+            <div id="stat_chart" class="center" style="min-width: 310px; height: 600px; margin: 0 auto"></div>
+            <div style="margin-bottom:50px;"></div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <script type="text/javascript">
+      </script>
+<script type="text/javascript">
+
+  var platform = "{{platform}}";
+  $('#select_platform').val(platform);
+  $('#select_platform').change(function() {
+    platform = $('#select_platform').val();
+    var url = '/all_order/' + platform;
+    alert(url);
+    window.location.href = url;
+  });
+
+
+$('#query_order').click(function(){
+  platform = $('#select_platform').val();
+  var url = '/all_order/' + platform;
+  alert(url);
+  window.location.href = url;
+  });
+
+$('#btn_go_heartbeat_config').click(function(){
+  var url = '/heartbeat_config/{{{service}}}?time_frame=' + time_frame + '&date_frame=' + date_frame;
+  window.location.href = url;
+  });
+
+</script>
+
+
+<script type="text/javascript">
+  $(function () {
+    /*
+       var item = [
+       {name : '首页',  href : '/'},
+       {name : v_service,  href : '/desktop/' + v_service},
+       {name : '服务概览', href : '#'}
+       ];
+       var html = '<div class="box">';
+       html += '<div class="box-content">';
+       html += '<div id="navigation">';
+       html += '</div>';
+       html += '</div>';
+       html += '</div>';
+       $('#navigation_cnt').append(html);
+       for (var i in item) {
+       var a = '';
+       if (item[i].href == '#') {
+       a = ' >> ' + item[i].name;
+       } else {
+       a = ' >> <a href="' + item[i].href + '" style="text-decoration:underline;cursor:pointer;">' + item[i].name + '</a>';
+       }
+       $('#navigation').append(a);
+       }
+	*/
+  });
+</script>

@@ -1,0 +1,155 @@
+<style type="text/css">
+body  {
+  font-family:Arial,Helvetica,sans-serif;
+  font-size: 10px;
+  vertical-align:middle;
+  font-weight:normal
+}
+.select_post {
+  width:80%;
+}
+.button {
+  display: inline-block;
+  outline: none;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  font: 10px/100% 'Microsoft yahei',Arial, Helvetica, sans-serif;
+  padding: .3em 1em .40em;
+  text-shadow: 0 1px 1px rgba(0,0,0,.3);
+  -webkit-border-radius: .5em; 
+  -moz-border-radius: .5em;
+  border-radius: .5em;
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+  box-shadow: 0 1px 2px rgba(0,0,0,.2);
+}
+.blue {
+  color: #d9eef7;
+  border: solid 1px #0076a3;
+  background: #0095cd;
+  background: -webkit-gradient(linear, left top, left bottom, from(#00adee), to(#0078a5));
+  background: -moz-linear-gradient(top,  #00adee,  #0078a5);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#00adee', endColorstr='#0078a5');
+}
+.green {
+  color: #e8f0de;
+  border: solid 1px #538312;
+  background: #64991e;
+  background: -webkit-gradient(linear, left top, left bottom, from(#7db72f), to(#4e7d0e));
+  background: -moz-linear-gradient(top,  #7db72f,  #4e7d0e);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#7db72f', endColorstr='#4e7d0e');
+}
+.red {
+  color: #faddde;
+  border: solid 1px #980c10;
+  background: #d81b21;
+  background: -webkit-gradient(linear, left top, left bottom, from(#ed1c24), to(#aa1317)); 
+  background: -moz-linear-gradient(top, #ed1c24, #aa1317); 
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ed1c24', endColorstr='#aa1317'); 
+}
+</style>
+
+<br>
+<span>商品数量: {{items_len}}</span>
+<br>
+<br>
+<div class="row-fluid">
+  <div class="box span12">
+    <div class="box-header">
+      <h2><i class="icon-align-justify"></i><span class="break"></span>所有商品</h2>
+      <div class="box-icon">
+        <a href="#" class="btn-minimize"><i class="icon-chevron-up"></i></a>
+        <a href="#" class="btn-close"><i class="icon-remove"></i></a>
+      </div>
+    </div>
+    <div class="box-content">
+      <table class="table table-bordered table-striped table-condensed">
+        <thead>
+          <tr>
+            <th>商品名字</th>
+            <th>商品标签</th>
+            <th>上架类别</th>
+            <th>售价</th>
+            <th>折扣</th>
+            <th>设置</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each items}}
+          <tr prod_id='{{prod_id}}'>
+            <td class="center" style="width:10%">{{prod_name}}</td>
+            <td class="center" style="width:10%">{{prod_type}}</td>
+            <td class="center" style="width:20%">
+              <select class="select_menu_type" value='{{menu_type}}'>
+                {{#each typeList}}
+                <option value="{{menu_type}}" />{{type_desc}}
+                {{/each}}
+                <option value='-1'/>下架
+              </select>
+              </td>
+              <td class="center" style="width:15%" ><input type='text' class='menu_price' value='{{price}}' /></td>
+              <td class="center" style="width:20%" ><input type='text' class ='menu_discount' value='{{discount}}' /></td>
+              <td class="center" style='width:10%'>
+              <button class="button blue" id="{{menu_id}}" onclick="javascript:setProdInfo(this)" width="110px;">修改</button>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div><!--/span-->
+</div><!--/row-->
+
+
+
+<script type="text/javascript">
+  // var postInfo = JSON.parse('{{post_info}}');
+  var allSelect = $(".select_menu_type");
+  $(".select_menu_type").each(function() {
+    {{#each typeInfo}}
+      if ('{{menu_type}}' == $(this).attr("value")) {
+        $(this).val('{{menu_type}}');
+      }
+    {{/each}}
+    })
+
+function EditComment(td_id) {
+  var cur_text = $('#'+td_id).text();
+
+  $('#'+td_id).html("<input id='edit_comment' onblur='addOrderComment()' type=text value='" + cur_text + "'/>");
+}
+
+function setProdInfo(obj) {
+  var postData = {};
+  postData['menu_id'] = $(obj).attr("id");
+  postData['menu_type'] = $(obj).parent().parent().find(".select_menu_type").val();
+  postData['price'] = $(obj).parent().parent().find(".menu_price").val();
+  postData['discount'] = $(obj).parent().parent().find(".menu_discount").val();
+  postData['prod_id'] = $(obj).parent().parent().attr("prod_id");
+
+  $.post("/set_menu_info", postData, function(data, err) {
+    if (err == "success" && data["error"] == false) {
+    alert("修改成功");
+    $(obj).parent().prev().prev().text(user);
+      } else {
+        alert("修改失败")
+      }
+    })
+}
+
+function setOrderRecycle(obj) {
+  var orderID = $(obj).attr("id");
+  var user = $(obj).parent().prev().find(".select_post").val();
+  alert($(obj).parent().prev().find(".select_post").val());
+  alert($(obj).attr("id"));
+  $.get("/set_order_recycle/" + orderID + "/" + user, function(data, err) {
+    if (err == "success" && data["error"] == false) {
+    alert("修改成功");
+    $(obj).parent().prev().prev().text(user);
+      } else {
+        alert(data)
+      }
+    })
+}
+</script>

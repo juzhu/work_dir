@@ -1,0 +1,162 @@
+<style type="text/css">
+body  {
+  font-family:Arial,Helvetica,sans-serif;
+  font-size: 10px;
+  vertical-align:middle;
+  font-weight:normal
+}
+.select_post {
+  width:80%;
+}
+.order_platform {
+  font-size:20px;
+}
+.button {
+  display: inline-block;
+  outline: none;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  font: 10px/100% 'Microsoft yahei',Arial, Helvetica, sans-serif;
+  padding: .3em 1em .40em;
+  text-shadow: 0 1px 1px rgba(0,0,0,.3);
+  -webkit-border-radius: .5em; 
+  -moz-border-radius: .5em;
+  border-radius: .5em;
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+  box-shadow: 0 1px 2px rgba(0,0,0,.2);
+}
+.blue {
+  color: #d9eef7;
+  border: solid 1px #0076a3;
+  background: #0095cd;
+  background: -webkit-gradient(linear, left top, left bottom, from(#00adee), to(#0078a5));
+  background: -moz-linear-gradient(top,  #00adee,  #0078a5);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#00adee', endColorstr='#0078a5');
+}
+.green {
+  color: #e8f0de;
+  border: solid 1px #538312;
+  background: #64991e;
+  background: -webkit-gradient(linear, left top, left bottom, from(#7db72f), to(#4e7d0e));
+  background: -moz-linear-gradient(top,  #7db72f,  #4e7d0e);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#7db72f', endColorstr='#4e7d0e');
+}
+.red {
+  color: #faddde;
+  border: solid 1px #980c10;
+  background: #d81b21;
+  background: -webkit-gradient(linear, left top, left bottom, from(#ed1c24), to(#aa1317)); 
+  background: -moz-linear-gradient(top, #ed1c24, #aa1317); 
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ed1c24', endColorstr='#aa1317'); 
+}
+</style>
+
+<br>
+<span>等待出菜: {{items_len}}</span>
+<br>
+<br>
+<div class="row-fluid">
+  <div class="box span12">
+    <div class="box-header">
+      <h2><i class="icon-align-justify"></i><span class="break"></span>所有订单</h2>
+      <div class="box-icon">
+        <a href="#" class="btn-minimize"><i class="icon-chevron-up"></i></a>
+        <a href="#" class="btn-close"><i class="icon-remove"></i></a>
+      </div>
+    </div>
+    <div class="box-content">
+      <table class="table table-bordered table-striped table-condensed">
+        <thead>
+          <tr>
+            <th>菜品</th>
+            <th>份数</th>
+            <th>订单</th>
+            <th>配菜助手</th>
+            <th>烹饪厨师</th>
+            <th>最大等待分钟数</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each items}}
+          <tr class='dish_tr' id='{{order_id}}' dishName='{{dish_name}}'>
+            <td class="center dish_name" style="width:10%">{{dish_name}}</td>
+            <td class="center" style="width:10%">{{cnt}}</td>
+            <td class="center order_platform" style="width:20%">{{own_order}}</td>
+            <td class='center select_assistent' style="width:10%">{{assistent}}
+            </td>
+
+
+            <td class='center select_cook' style="width:10%">{{cook}}
+            </td>
+            <td class="center" style="width:10%">{{wait_minute}} 分钟</td>
+            <td class="center" style='width:10%'>
+              {{#if_eq status 1}}
+              <button class="button blue" order_id="{{order_id}}" onclick="javascript:finishDish(this)" width="110px;">出菜完毕</button>
+              {{/if_eq}}
+              {{#if_eq status 2}}
+              完成
+              {{/if_eq}}
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div><!--/span-->
+</div><!--/row-->
+
+
+
+<script type="text/javascript">
+  $(".dish_name").on('click', function() {
+    var dishName = $(this).text();
+    var allDishTD = $(".dish_tr");
+    allDishTD.each(function() {
+      var trName = $(this).attr("dishName");
+      if ($(this).attr("dishName") != dishName) {
+        $(this).toggle();
+      }
+      })
+    })
+
+  // 厨师信息
+function finishDish(obj) {
+  var orderID = $(obj).attr("order_id");
+  var statusTD = $(obj).parent();
+  var dishTR = $(statusTD).parent();
+  var cook = $(dishTR).find(".select_cook").text();
+  var assistent = $(dishTR).find(".select_assistent").text();
+  var dishName = $(dishTR).find(".dish_name").text();
+  // alert($(obj).parent().prev().find(".select_post").val());
+  // alert($(obj).attr("id"));
+  var postData = {};
+  postData["dishName"] = dishName;
+  postData["assistent"] = assistent;
+  postData["cook"] = cook;
+  $.post("/finish_dish/" + orderID, postData, function(data, err) {
+    if (err == "success" && data["error"] == false) {
+      $(obj).remove();
+      $(statusTD).parent().remove()
+    var leftDish = $(".dish_tr:visible");
+    if (leftDish.length == 0) {
+      $(".dish_tr").show();
+      } else {
+      leftDish.each(function() {
+        if ($(this).attr("dishName") == dishName) {
+          var curTotalCnt = parseInt($(this).find(".dish_total_count").text());
+          curTotalCnt = curTotalCnt - 1;
+          $(this).find(".dish_total_count").text(curTotalCnt)
+        }
+        })
+      }
+
+    } else {
+        alert("修改失败")
+    }
+  })
+}
+
+</script>

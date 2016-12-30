@@ -1,0 +1,110 @@
+<div class="row-fluid">
+  <div class="box">
+    <div class="box-header">
+      <h2><i class="icon-list-alt"></i><span class="break"></span>订单筛选</h2>
+      <div class="box-icon">
+        <a href="#" class="btn-minimize"><i class="icon-chevron-up"></i></a>
+        <a href="#" class="btn-close"><i class="icon-remove"></i></a>
+      </div>
+    </div>
+    <div class="box-content">
+      <div class="center" style="min-width: 310px; height: 40px; margin: 0 auto">
+        <div class="controls" style="float:left;margin-left:30px;">
+          From: <input type="text" class="input-xlarge datepicker" id="date01" name="date_bgn" value="" />
+          To: <input type="text" class="input-xlarge datepicker" id="date02"   name="date_end" value="" />
+          <button id='query_order' type="submit" class="btn btn-primary">查询</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row-fluid">
+  <div class="box span12">
+    <div class="box-header">
+      <h2><i class="icon-align-justify"></i><span class="break"></span>聚箸所有订单汇总</h2>
+      <div class="box-icon">
+        <a href="#" class="btn-minimize"><i class="icon-chevron-up"></i></a>
+        <a href="#" class="btn-close"><i class="icon-remove"></i></a>
+      </div>
+    </div>
+    <div class="box-content">
+      <table class="table table-bordered table-striped table-condensed">
+        <thead>
+          <tr>
+            <th>分店</th>      
+            <th>平台</th>      
+            <th>交易额</th>
+            <th>订单数</th>
+            <th>订单详情</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each items}}
+          <tr>
+            <td class="center">{{source_store}}</td>
+            <td class="center">{{platform}}</td>
+            <td class="center">{{price}}</td>
+            <td class="center">{{cnt}}</td>
+            <td class="center">
+              <a href="/all_order/{{platform}}/{{bdate}}/{{edate}}" style="color: #045e9f">查看订单</a>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div><!--/span-->
+</div><!--/row-->
+
+
+<script type="text/javascript">
+$(function () {
+  /*
+  var bdate = "{{bdate}}";
+  var edate = "{{edate}}";
+  $('#date01').val(bdate);
+  $('#date02').val(edate);
+  */
+});
+  
+
+$('#query_order').click(function(){
+  platform = $('#select_platform').val();
+  var url = '/income_summary/';
+  var d1 = $('#date01').val();
+  var d2 = $('#date02').val();
+  if( d1 == "" && d2 == "" ) {
+    var d = new Date();
+    var mon = (d.getMonth()+1);
+    if( mon < 10 ) {
+      mon = "0" + mon;
+    }
+    var bdate = d.getFullYear() + '-' + mon + '-' + d.getDate();
+    var edate = bdate;
+    url += bdate + "/" + edate;
+  } else {
+    if( d1 < d2 ) {
+      var bdate = "";
+      var edate = "";
+      var myarr1 = d1.split("/");
+      bdate = myarr1[2] + "-" + myarr1[0] + "-" + myarr1[1]; 
+      var myarr2 = d2.split("/");
+      edate = myarr2[2] + "-" + myarr2[0] + "-" + myarr2[1];
+      url += bdate + "/" + edate;
+    } else {
+      var bdate = "";
+      var myarr1 = d1.split("/");
+      bdate = myarr1[2] + "-" + myarr1[0] + "-" + myarr1[1]; 
+      var edate = bdate;
+      url += bdate + "/" + edate;
+    }
+  }
+  window.location.href = url;
+});
+
+
+  $(function () {
+
+    });
+</script>

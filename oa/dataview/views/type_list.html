@@ -1,0 +1,159 @@
+<style type="text/css">
+body  {
+  font-family:Arial,Helvetica,sans-serif;
+  font-size: 10px;
+  vertical-align:middle;
+  font-weight:normal
+}
+.select_post {
+  width:80%;
+}
+.button {
+  display: inline-block;
+  outline: none;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  font: 10px/100% 'Microsoft yahei',Arial, Helvetica, sans-serif;
+  padding: .3em 1em .40em;
+  text-shadow: 0 1px 1px rgba(0,0,0,.3);
+  -webkit-border-radius: .5em; 
+  -moz-border-radius: .5em;
+  border-radius: .5em;
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+  box-shadow: 0 1px 2px rgba(0,0,0,.2);
+}
+.blue {
+  color: #d9eef7;
+  border: solid 1px #0076a3;
+  background: #0095cd;
+  background: -webkit-gradient(linear, left top, left bottom, from(#00adee), to(#0078a5));
+  background: -moz-linear-gradient(top,  #00adee,  #0078a5);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#00adee', endColorstr='#0078a5');
+}
+.green {
+  color: #e8f0de;
+  border: solid 1px #538312;
+  background: #64991e;
+  background: -webkit-gradient(linear, left top, left bottom, from(#7db72f), to(#4e7d0e));
+  background: -moz-linear-gradient(top,  #7db72f,  #4e7d0e);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#7db72f', endColorstr='#4e7d0e');
+}
+.red {
+  color: #faddde;
+  border: solid 1px #980c10;
+  background: #d81b21;
+  background: -webkit-gradient(linear, left top, left bottom, from(#ed1c24), to(#aa1317)); 
+  background: -moz-linear-gradient(top, #ed1c24, #aa1317); 
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ed1c24', endColorstr='#aa1317'); 
+}
+</style>
+
+<br>
+<div class="row-fluid">
+  <div class="box span12">
+    <div class="box-header">
+      <h2><i class="icon-align-justify"></i><span class="break"></span>所有类别</h2>
+      <div class="box-icon">
+        <a href="#" class="btn-minimize"><i class="icon-chevron-up"></i></a>
+        <a href="#" class="btn-close"><i class="icon-remove"></i></a>
+      </div>
+    </div>
+    <div class="box-content">
+      <table class="table table-bordered table-striped table-condensed">
+        <thead>
+          <tr>
+            <th>类别名字</th>
+            <th>包含菜品</th>
+            <th>设置</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each items}}
+          <tr>
+            <td class="center" style="width:10%">{{type_desc}}</td>
+            <td class="center" style="width:10%">{{prod_count}}</td>
+            <td>
+              <button class="button blue" onclick="javascript:setOrderPost(this)" width="110px;">删除</button>
+            </td>
+          </tr>
+          {{/each}}
+          <tr>
+            <td><input id='add_type_desc' type='text'/>
+            </td>
+            <td>
+              <button class="button blue" onclick="javascript:setOrderPost(this)" width="110px;">添加</button>
+            </td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div><!--/span-->
+</div><!--/row-->
+
+
+
+<script type="text/javascript">
+  // var postInfo = JSON.parse('{{post_info}}');
+var allSelect = $(".select_post");
+$(".select_post").each(function() {
+  {{#each post_info}}
+  if ('{{value}}' == $(this).parent().prev().text()) {
+  $(this).val('{{value}}');
+  }
+  {{/each}}
+  })
+
+function EditComment(td_id) {
+  var cur_text = $('#'+td_id).text();
+
+  $('#'+td_id).html("<input id='edit_comment' onblur='addOrderComment()' type=text value='" + cur_text + "'/>");
+}
+
+function addOrderComment() {
+  var cur_text = $('#edit_comment').attr("value");
+  var parentTD = $('#edit_comment').parent();
+  $.post("/order_comment/" + $(parentTD).attr("id"), {"comment":cur_text}, function(ret, err) {
+    if (err == 'success' && !(ret.error)) {
+    $('#edit_comment').remove();
+    $(parentTD).text(cur_text);
+    alert("修改订单备注成功")
+    } else {
+    alert("修改订单备注失败")
+    }
+    }, 'json')
+}
+
+function setOrderPost(obj) {
+  var orderID = $(obj).attr("id");
+  var user = $(obj).parent().prev().find(".select_post").val();
+  // alert($(obj).parent().prev().find(".select_post").val());
+  // alert($(obj).attr("id"));
+  $.get("/set_order_post/" + orderID + "/" + user, function(data, err) {
+    if (err == "success" && data["error"] == false) {
+    alert("修改成功");
+    $(obj).parent().prev().prev().text(user);
+    } else {
+    alert("修改失败")
+    }
+    })
+}
+
+function setOrderRecycle(obj) {
+  var orderID = $(obj).attr("id");
+  var user = $(obj).parent().prev().find(".select_post").val();
+  alert($(obj).parent().prev().find(".select_post").val());
+  alert($(obj).attr("id"));
+  $.get("/set_order_recycle/" + orderID + "/" + user, function(data, err) {
+    if (err == "success" && data["error"] == false) {
+    alert("修改成功");
+    $(obj).parent().prev().prev().text(user);
+    } else {
+    alert(data)
+    }
+    })
+}
+</script>

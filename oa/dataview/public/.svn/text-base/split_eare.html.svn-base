@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>绘图工具</title>
+    <style type="text/css">
+      *{
+        margin:0px;
+        padding:0px;
+      }
+      body, button, input, select, textarea {
+        font: 12px/16px Verdana, Helvetica, Arial, sans-serif;
+      }
+      #container{
+        min-width:600px;
+        min-height:767px;
+      }
+    </style>
+    <script src="/js/jquery-1.10.2.js"></script>
+    <script charset="utf-8" src="http://map.qq.com/api/js?v=2.exp&libraries=convertor"></script>
+    <script charset="utf-8" src="http://map.qq.com/api/js?v=2.exp&libraries=drawing,convertor"></script>
+    <script>
+      var allPloygon = [];
+      var map;
+      var storeIcon;
+      function init(){
+        var storeCenter = new qq.maps.LatLng(22.566597,113.870534);
+        map = new qq.maps.Map(document.getElementById("container"),{
+          center: storeCenter,
+          zoom: 14,
+          });
+
+          var size = new qq.maps.Size(24, 24);
+          var origin = new qq.maps.Point(0, 0);
+          storeIcon = new qq.maps.MarkerImage('/images/center.gif', size, origin);;
+          var marker = new qq.maps.Marker({
+            icon: storeIcon,
+            map:map,
+            position: storeCenter,
+            zIndex: 10000,
+            });
+
+            var drawingManager = new qq.maps.drawing.DrawingManager({
+              drawingMode: qq.maps.drawing.OverlayType.MARKER,
+              drawingControl: true,
+              drawingControlOptions: {
+                position: qq.maps.ControlPosition.TOP_CENTER,
+                drawingModes: [
+                qq.maps.drawing.OverlayType.MARKER,
+                qq.maps.drawing.OverlayType.CIRCLE,
+                qq.maps.drawing.OverlayType.POLYGON,
+                qq.maps.drawing.OverlayType.POLYLINE,
+                qq.maps.drawing.OverlayType.RECTANGLE
+                ]
+                },
+                circleOptions: {
+                  fillColor: new qq.maps.Color(255, 208, 70, 0.3),
+                  strokeColor: new qq.maps.Color(88, 88, 88, 1),
+                  strokeWeight: 3,
+                  clickable: false
+                }
+                });
+                qq.maps.event.addListener(drawingManager, "overlaycomplete", function(event) {
+                  alert("type: " + event.type + " complete");
+                  alert("overlay " + JSON.stringify(event.overlay.path.elems));
+                  allPloygon.push(event.overlay.path.elems);
+                })
+                drawingManager.setMap(map);
+                // initRegion();
+              }
+              function showAll() {
+                console.log(JSON.stringify(allPloygon));
+                alert(JSON.stringify(allPloygon));
+              }
+              function initRegion() {
+                $.get("/get_region", function(data, success) {
+                  if (success == 'success') {
+                  for (i in data) {
+                    var polygonPath = [];
+                    var regionData = data[i];
+                    for (j in regionData) {
+                      var pt = new qq.maps.LatLng(regionData[j].lat, regionData[j].lng);
+                      polygonPath.push(pt);
+                    }
+                    var ployGon = new qq.maps.Polygon({
+                      map:map,
+                      path:polygonPath,
+                      strokeColor: '#000000',
+                      });
+                    regionInfo.push(ployGon);
+                  }
+                }
+                })
+              }
+              function locateSuccess(result) {
+                console.log(result);
+                var myLocate = new qq.maps.LatLng(result.coords.latitude, result.coords.longitude) ;
+                qq.maps.convertor.translate(myLocate, 1, function(res) {
+                  myLocate = res[0];
+                  map.setCenter(myLocate);
+                  $.get("/update_user_gps/" + myLocate.lat + "/" + myLocate.lng, function(data, success) {
+                    });
+                  })
+                  setTimeout(getLocate, 5000);
+                }
+                function locateError(error) {
+                  console.log(error);
+                  setTimeout(getLocate, 5000);
+                }
+                function getLocate() {
+                  navigator.geolocation.getCurrentPosition(locateSuccess, locateError, {
+                    enableHighAcuracy: true,
+                    timeout: 5000,
+                    maximumAge: 20000,
+                    });
+                  }
+                  setTimeout(getLocate, 5000);
+                </script>
+              </head>
+              <body onload="init()">
+                <div>
+                  <div><button onclick='showAll()'>显示所有分区信息</button><button onclick='getLocate()'>显示所有分区信息</button></div>
+                  <div id="container"></div>
+                </div>
+              </body>
+            </html>
+

@@ -1,0 +1,141 @@
+<div class="row-fluid">
+  <div class="box span12">
+    <div class="box-header">
+      <h2><i class="icon-align-justify"></i><span class="break"></span>成功用户数: {{phone_num}}</h2>
+      <div class="box-icon">
+        <a href="#" class="btn-minimize"><i class="icon-chevron-up"></i></a>
+        <a href="#" class="btn-close"><i class="icon-remove"></i></a>
+      </div>
+    </div>
+    <div class="box-content">
+      <table class="table table-bordered table-striped table-condensed">
+        <thead>
+          <tr>
+            <th>用户名</th>
+            <th>电话</th>
+            <th>地址</th>
+            <th>分店</th>
+            <th>订单--金额</th>
+            <th>已发</th>
+
+            <th>短信前订单时间</th>
+            <th>短信后订单时间</th>
+            <th>短信后订单数</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each phone_info}}
+          <tr id='tr_{{id}}'>
+            <td class="center" style='width:15%'>{{user_name}}</td>
+            <td class="center" style='width:10%'><a href="/user_order/{{phone}}" style="color: #045e9f"> {{phone}} </a></td>
+            <td class="center" style='width:20%'>{{user_addr}}</td>
+            {{#if_eq store_id 1}}
+            <td class="center" style='width:10%'>前进店</td>
+            {{/if_eq}}
+            {{#if_eq store_id 2}}
+            <td class="center" style='width:10%'>坪洲店</td>
+            {{/if_eq}}
+            {{#if_eq store_id 3}}
+            <td class="center" style='width:10%'>前进店 坪洲店</td>
+            {{/if_eq}}
+            <td class="center" style='width:10%'>{{order_num}}--{{accumulate_amount}}</td>
+            <td class="center" style='width:5%'>{{sms_cnt}}</td>
+            <td class="center style='width:10%">{{last_order_time_before_sms}}</td>
+            <td class="center style='width:10%">{{last_order_time_after_sms}}</td>
+            <td class="center style='width:5%">{{num}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div><!--/span-->
+</div><!--/row-->
+
+<script type="text/javascript">
+</script>
+<script type="text/javascript">
+
+  function deleSMS(id) {
+    $.get("/user_market/sms_del/" + id, function(ret, success) {
+      if (success != "success") {
+        alert("网络错误: " + err);
+      } else {
+      if (ret.error) {
+        alert("删除出错 " + ret.error);
+      } else {
+      alert("删除成功");
+      $("#tr_"+id).remove();
+      }
+        }
+      })
+  }
+
+  var orderby = "{{orderby}}";
+  var order = "{{order}}";
+
+  $('#select_orderby').val(orderby);
+  $('#select_order').val(order);
+
+  /*
+     $('#select_orderby').change(function() {
+     orderby = $('#select_orderby').val();
+     var url = '/userwithorder/' + orderby + "/desc";
+     window.location.href = url;
+     });
+   */
+
+function filterUser() {
+  var postData = $("#user_filter_form").serialize();
+  $.post("/user_market/filter_user", postData, function(ret, success) {
+    if (success == "success" && !ret.error) {
+    var userData = ret.data;
+    userData.forEach(function(user) {
+      var trData = "<tr>";
+      trData += "<td class='center'>" + user.user_name + "</td>";
+      trData += "<td class='center'>" + user.phone + "</td>";
+      trData += "<td class='center'>" + user.user_addr + "</td>";
+      trData += "<td class='center'>" + user.first_order_time + "</td>";
+      trData += "<td class='center'>" + user.last_order_time + "</td>";
+      trData += "<td class='center'>" + user.order_num + "</td>";
+      trData += "<td class='center'>" + user.accumulate_amount + "</td>";
+      trData += "<td class='center'><a href='function:addUser({{tag_id}}, " + user.phone + ")'>添加</a></td>";
+      trData += "</tr>";
+      $("#user_filter_ret").append(trData);
+      });
+    }
+  })
+}
+</script>
+
+
+
+  </script>
+
+
+  <script type="text/javascript">
+    $(function () {
+      /*
+         var item = [
+         {name : '首页',  href : '/'},
+         {name : v_service,  href : '/desktop/' + v_service},
+         {name : '服务概览', href : '#'}
+         ];
+         var html = '<div class="box">';
+         html += '<div class="box-content">';
+         html += '<div id="navigation">';
+         html += '</div>';
+         html += '</div>';
+         html += '</div>';
+         $('#navigation_cnt').append(html);
+         for (var i in item) {
+         var a = '';
+         if (item[i].href == '#') {
+         a = ' >> ' + item[i].name;
+         } else {
+         a = ' >> <a href="' + item[i].href + '" style="text-decoration:underline;cursor:pointer;">' + item[i].name + '</a>';
+         }
+         $('#navigation').append(a);
+         }
+       */
+    });
+  </script>

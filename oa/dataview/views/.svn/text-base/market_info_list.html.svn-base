@@ -1,0 +1,108 @@
+<div class="row-fluid">
+  <div class="box span12">
+    <div class="box-header">
+      <h2><i class="icon-align-justify"></i><span class="break"></span>营销内容</h2>
+      <div class="box-icon">
+        <a href="#" class="btn-minimize"><i class="icon-chevron-up"></i></a>
+        <a href="#" class="btn-close"><i class="icon-remove"></i></a>
+      </div>
+    </div>
+    <div class="box-content">
+      <table class="table table-bordered table-striped table-condensed">
+        <thead>
+          <tr>
+            <th>时间</th>
+            <th>文案</th>
+            <th>查询语句</th>
+            <th>筛选数</th>
+            <th>发送数</th>
+            <th>成功</th>
+            <th>黑名单</th>
+            <th>其他失败</th>
+            <th>两日内订单数</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each sms_info}}
+          <tr>
+            <td class="center" style='width:10%'>{{day_str}}</td>
+            <td class="center" style='width:40%'>{{content}}</td>
+            <td class="center" style='width:10%'>{{sql_str}}</td>
+            <td class="center"  style='width:5%'>{{phone_num}}</td>
+            <td class="center"  style='width:5%'>{{total_send}}</td>
+            <td class="center" style='width:5%'>{{success}}</td>
+            <td class="center" style='width:5%'>{{blacklist}}</td>
+            <td class="center" style='width:5%'>{{other_failed}}</td>
+            <td class="center" style='width:5%'>{{order_num}}</td>
+            <td class="center"  style='width:10%'><a href='/user_market/{{sms_id}}'>详情</a></td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div><!--/span-->
+</div><!--/row-->
+
+<script type="text/javascript">
+</script>
+<script type="text/javascript">
+
+  var orderby = "{{orderby}}";
+  var order = "{{order}}";
+
+  $('#select_orderby').val(orderby);
+  $('#select_order').val(order);
+
+  /*
+     $('#select_orderby').change(function() {
+     orderby = $('#select_orderby').val();
+     var url = '/userwithorder/' + orderby + "/desc";
+     window.location.href = url;
+     });
+   */
+
+  $('#query_order').click(function(){
+    orderby = $('#select_orderby').val();
+    order = $('#select_order').val();
+    var url = '/userwithorder/' + orderby + "/" + order;
+    window.location.href = url;
+    });
+
+function newSMSInfo() {
+  alert("here");
+  $("#sms_form").submit(function() {
+    alert($(this).serialize());
+    })
+  $("#sms_form").submit()
+}
+</script>
+
+
+<script type="text/javascript">
+  $(function () {
+    /*
+       var item = [
+       {name : '首页',  href : '/'},
+       {name : v_service,  href : '/desktop/' + v_service},
+       {name : '服务概览', href : '#'}
+       ];
+       var html = '<div class="box">';
+       html += '<div class="box-content">';
+       html += '<div id="navigation">';
+       html += '</div>';
+       html += '</div>';
+       html += '</div>';
+       $('#navigation_cnt').append(html);
+       for (var i in item) {
+       var a = '';
+       if (item[i].href == '#') {
+       a = ' >> ' + item[i].name;
+       } else {
+       a = ' >> <a href="' + item[i].href + '" style="text-decoration:underline;cursor:pointer;">' + item[i].name + '</a>';
+       }
+       $('#navigation').append(a);
+       }
+     */
+  });
+</script>

@@ -1,0 +1,79 @@
+insert into market_tag_info values(8, "老客户激活0416", now(), '', "最近1周没点 最近2月有点菜的", 0, "");
+insert ignore into market_user_info(uid, tag_name,last_order_time_before_market) select uid, "老客户激活0416",last_order_time from juzhu.juzhu_user_info where last_order_time <= "2016-04-09 and last_order_time>="2016-03-01"
+update market_tag_info set content='聚箸上新菜啦，板栗焖猪蹄，香辣美容蹄，孜然龙骨，蟹黄豆花，烟笋腊肉等等，别咽口水，马上下单，然后安心等我们的美味吧！回复N退订【聚箸】' where id=7;
+
+insert into market_tag_info values(9, "新菜推荐", now(), '', "最近1周没点 最近6月有点菜的", 0, "");
+insert ignore into market_user_info(uid, tag_name,last_order_time_before_market) select uid, "新菜推荐0424",last_order_time from juzhu.juzhu_user_info where last_order_time <= "2016-04-01 and last_order_time>="2016-03-10"
+update market_tag_info set content='聚箸上新菜啦，孜然龙骨，板栗红枣养生牛尾，毛豆茄子等等，老客户点本周推荐菜品在之前优惠之上还可再打九折哦,详询客服！回复N退订【聚箸】' where id=9;
+
+
+
+insert into market_tag_info values(10, "3.10之前客户激活", now(), '', "点菜时间在3.10之前的", 0, "");
+insert ignore into market_user_info(uid, tag_name,last_order_time_before_market) select uid, "3.10之前客户激活",last_order_time from juzhu.juzhu_user_info where last_order_time <= "2016-3-10";
+update market_tag_info set content='新的一周开始了，聚箸为您准备了不少新菜哦，本周推荐美容蹄，养生牛尾，毛豆茄子老客户还是9折。回复N退订【聚箸】' where id=10;
+
+insert into market_tag_info values(11, "3.10之后客户营销", now(), '', "3.10之后有点餐4.25之后没点餐的", 0, "");
+insert ignore into market_user_info(uid, tag_name,last_order_time_before_market) select uid, "3.10之后客户营销",last_order_time from juzhu.juzhu_user_info where last_order_time > "2016-03-10" and last_order_time<"2016-04-26";
+update market_tag_info set content='辛苦一周终于熬到周五，而且马上就是小长假，想想就让人激动！躺沙发看欢乐颂，等着聚箸小哥把美味送到您的桌上，美得哟！！回复N退订【聚箸】' where id=11;
+
+
+
+insert into market_tag_info values(12, "3.15之后客户营销", now(), '', "3.15之后有点餐4.30之后没点餐的", 0, "");
+insert ignore into market_user_info(uid, tag_name,last_order_time_before_market) select uid, "3.15之后客户营销",last_order_time from juzhu.juzhu_user_info where last_order_time > "2016-03-15" and last_order_time<"2016-04-30";
+update market_tag_info set content='亲，5.1过得怎么样，放假回来了吧，我们聚箸张罗了一桌好饭等您哦！感谢您一直以来的对我们的支持！【聚箸】' where id=12;
+
+insert into market_tag_info values(13, "vip客户营销", now(), '', "0401之前有点餐过5次的", 0, "");
+insert ignore into market_user_info(uid, tag_name,last_order_time_before_market) select uid, "vip客户营销",last_order_time from juzhu.juzhu_user_info where last_order_time <"2016-04-01" and (order_num>=5 or accumulate_amount>500);
+update market_tag_info set content='聚箸送菜啦！您是我们聚箸的VIP客户，本周点单将为您加送一份花生米和大瓶冰镇雪碧。只需下单时备注密码160504，限本手机号使用哦【聚箸】' where id=13;
+
+insert into market_tag_info values(14, "vip客户营销一周", now(), '', "0420之前0401之后有点餐过5次的", 0, "");
+insert ignore into market_user_info(uid, tag_name,last_order_time_before_market) select uid, "vip客户营销一周",last_order_time from juzhu.juzhu_user_info where last_order_time <"2016-04-20" and last_order_time>"2016-04-01" and (order_num>=5 or accumulate_amount>500);
+update market_tag_info set content='聚箸送菜啦！您是我们聚箸的VIP客户，本周点单将为您加送大瓶冰镇雪碧。只需下单时备注密码160514，限本手机号使用哦【聚箸】' where id=14;
+
+
+insert into market_tag_info values(15, "母亲节营销", now(), '', "最近一个月用户", 0, "");
+insert ignore into market_user_info(uid, tag_name,last_order_time_before_market) select uid, "母亲节营销",last_order_time from juzhu.juzhu_user_info where last_order_time >"2016-04-01" and last_order_time<"2016-05-08";
+update market_tag_info set content='母亲节，就该让她好好休息，别再忙碌于菜场和厨房，陪她看看电视，散散步，其他的一切就交给聚箸吧。回复N退订【聚箸】' where id=14;
+
+
+insert into market_tag_info values(16, "回收通知", now(), '', "最近两月有点餐的用户", 0, "");
+insert ignore into market_user_info(uid, tag_name,last_order_time_before_market) select uid, "回收通知",last_order_time from juzhu.juzhu_user_info where last_order_time >"2016-03-10" and last_order_time<"2016-05-09";
+update market_tag_info set content='聚箸点餐不用担心回收啦，我们准备了回收袋，您只需将餐具放入袋中放门口就行了，小哥会尽快来回收哦！拒绝一次性，我们一起努力。回复N退订【聚箸】' where id=16;
+
+insert into market_tag_info values(17, "周六晚餐通知", now(), '', "最近两个月点晚餐的", 0, "");
+insert ignore into market_user_info(uid, tag_name,last_order_time_before_market) select uid, "周六晚餐通知",max(order_time) as last_tiem from juzhu.order_position as p left join juzhu.juzhu_user_info as i on p.phone=i.phone  where right(order_time, 8)>"18:30" and and DAYOFWEEK(order_time)=7 group by phone having last_tiem<"2016-05-14";
+update market_tag_info set content='周六的晚餐是否已经想好吃什么了呢? 紫苏焖牛蛙？干烧鲤鱼？或是土豆丝加西红柿蛋汤？聚箸随时为你准备！复N退订【聚箸餐饮】' where id=17;
+
+insert into market_tag_info values(19, "0515午餐", now(), '', "最近两个月点晚餐的", 0, "");
+insert ignore into market_user_info(uid, tag_name,last_order_time_before_market) select uid, "0515午餐",last_order_time from juzhu.juzhu_user_info where last_order_time >"2016-03-20" and last_order_time<"2016-05-12";
+update market_tag_info set content='次午饭啦，烧鸡公，水煮鱼，香辣牛蛙香辣虾。难得好天气，吃完午饭赶紧出门晒晒哦。回复N退订【聚箸餐饮】' where id=19;
+
+insert into market_tag_info values(20, "0523新蔡推荐", now(), '', "最近两周没点才的 + 最近两周的新客户点餐一次的", 0, "");
+insert ignore into market_user_info(uid, tag_name,last_order_time_before_market) select uid, "0523新蔡推荐",last_order_time from juzhu.juzhu_user_info where last_order_time <"2016-05-20" and last_order_time>"2016-04-01";
+update market_tag_info set content='新的一周，好的开始，聚箸祝您工作顺心！新推出招财凤爪，小龙虾，会给您带来好运，欢迎品尝哦！回复N退订【聚箸餐饮】' where id=20;
+
+insert into market_tag_info values(20, "0523新蔡推荐", now(), '', "最近两周没点才的 + 最近两周的新客户点餐一次的", 0, "");
+insert ignore into market_user_info(uid, tag_name,last_order_time_before_market) select uid, "0523新蔡推荐",last_order_time from juzhu.juzhu_user_info where last_order_time <"2016-05-20" and last_order_time>"2016-04-01";
+update market_tag_info set content='新的一周，好的开始，聚箸祝您工作顺心！新推出招财凤爪，小龙虾，会给您带来好运，欢迎品尝哦！回复N退订【聚箸餐饮】' where id=20;
+
+insert into market_tag_info values(21, "0607新用户", now(), '', "最近一月的新用户 + 两周没点餐的点餐超过5次的", 0, "");
+insert ignore into market_user_info(uid, tag_name,last_order_time_before_market) select uid, "0607新用户",last_order_time from juzhu.juzhu_user_info where (last_order_time <"2016-05-23" and order_num>=5) or (first_order_time>"2016-05-15" and order_num=1 and last_order_time<""2016-06-05");
+update market_tag_info set content='蒜香小龙虾加冰镇啤酒，或者板栗猪蹄加爽口藕片，今晚吃什么? 赶紧去聚箸看看，总有一款适合你的晚餐，！回复N退订【聚箸餐饮】' where id=20;
+
+insert into market_tag_info values(30, "0814老客户激活", now(), '', "点餐超过5次的， 最后点餐超过3个月的", 0, "");
+insert ignore into market_user_info(uid, tag_name,last_order_time_before_market) select distinct uid, "0814老客户激活",last_order_time from juzhu.juzhu_user_info as u left join order_position as p on p.phone=u.phone where dayofweek(order_time)=1 and u.last_order_time<"2016-07-16";
+update market_tag_info set content='好久没有亲的消息了，不知最近吃的还好吗？聚箸新上菜品经典川味太安鱼，椒盐茄盒以及各种实惠套餐，期待你来品尝哦！回复N退订【聚箸餐饮】' where id=30;
+
+insert into market_tag_info values(31, "0819晚餐客户激活", now(), '', "最近点餐在两个月内的晚餐用户", 0, "");
+insert ignore into market_user_info(uid, tag_name,last_order_time_before_market) select distinct uid, "0819晚餐客户激活",last_order_time from juzhu.juzhu_user_info as u where u.last_order_time<"2016-07-10" and u.last_order_time>"2016-06-15";
+update market_tag_info set content='又是一个激动人心的周五，拉上朋友，叫上同事一起来一顿大餐来迎接周末吧，猪蹄，鲜鱼，龙虾...,我在聚箸等你哦 回复N退订【聚箸餐饮】' where id=31;
+
+
+insert into market_tag_info values(32, "0820晚餐客户激活", now(), '', "晚餐19点之后用户户", 0, "");
+insert ignore into market_user_info(uid, tag_name,last_order_time_before_market,tag_id) select distinct uid, "晚餐19点之后用户户",last_order_time,32 from dinner_user_19 as u where u.last_order_time<"2016-08-18";
+update market_tag_info set content='晚餐准备好了吗？聚箸大厨以及配送小哥时刻就位，营养套餐，川菜经典太安鱼，家常粉蒸肉，只要您一个订单，我们半小时内送到！回复N退订' where id=32;
+
+insert into market_tag_info values(33, "排球营销", now(), '', "最近三个月用户", 0, "");
+insert ignore into market_user_info(uid, tag_name,last_order_time_before_market,tag_id) select distinct uid, "排球营销",last_order_time,33 from juzhu.juzhu_user_info as u where u.last_order_time>"2016-05-01";
+update market_tag_info set content='热烈祝贺我们的女排姑娘们，顶住压力，拿得宝贵的金牌！为表祝贺，今天点餐，我们全部送冰镇饮料！
+。回复N退订' where id=33;

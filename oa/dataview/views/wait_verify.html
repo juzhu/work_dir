@@ -1,0 +1,311 @@
+<style type="text/css">
+  body  {
+    font-family:Arial,Helvetica,sans-serif;
+    font-size: 10px;
+    vertical-align:middle;
+    font-weight:normal
+  }
+  .verify_input {
+    height:15px;
+    margin-bottom:1px;
+  }
+  .button {
+    display: inline-block;
+    outline: none;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    font: 10px/100% 'Microsoft yahei',Arial, Helvetica, sans-serif;
+    padding: .3em 1em .40em;
+    text-shadow: 0 1px 1px rgba(0,0,0,.3);
+    -webkit-border-radius: .5em;
+    -moz-border-radius: .5em;
+    border-radius: .5em;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    box-shadow: 0 1px 2px rgba(0,0,0,.2);
+  }
+  .blue {
+    color: #d9eef7;
+    border: solid 1px #0076a3;
+    background: #0095cd;
+    background: -webkit-gradient(linear, left top, left bottom, from(#00adee), to(#0078a5));
+    background: -moz-linear-gradient(top,  #00adee,  #0078a5);
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#00adee', endColorstr='#0078a5');
+  }
+  .green {
+    color: #e8f0de;
+    border: solid 1px #538312;
+    background: #64991e;
+    background: -webkit-gradient(linear, left top, left bottom, from(#7db72f), to(#4e7d0e));
+    background: -moz-linear-gradient(top,  #7db72f,  #4e7d0e);
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#7db72f', endColorstr='#4e7d0e');
+  }
+  .red {
+    color: #faddde;
+    border: solid 1px #980c10;
+    background: #d81b21;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ed1c24), to(#aa1317));
+    background: -moz-linear-gradient(top, #ed1c24, #aa1317);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ed1c24', endColorstr='#aa1317');
+  }
+</style>
+
+<br>
+<span class='noprint'>待验收 : {{items_len}}</span>
+<br>
+<br>
+<div class="row-fluid">
+  <div class="box span12">
+    <div class="box-header noprint">
+      <h2><i class="icon-align-justify"></i><span class="break"></span>所有订单</h2>
+      <div class="box-icon">
+        <a href="#" class="btn-minimize"><i class="icon-chevron-up"></i></a>
+        <a href="#" class="btn-close"><i class="icon-remove"></i></a>
+      </div>
+    </div>
+    <div class="box-content">
+      <div class="center noprint" style="min-width: 310px; height: 40px; margin: 0 auto">
+        <div class="controls" style="float:left;margin-left:30px;">
+          <button id='verify_yesterday' type="submit" class="btn btn-primary">昨天</button>
+          <button id='verify_all' type="submit" class="btn btn-primary">所有未验收</button>
+          From: <input type="text" class="input-xlarge datepicker" id="date01" name="date_bgn" value="" />
+          To: <input type="text" class="input-xlarge datepicker" id="date02"   name="date_end" value="" />
+          <button id='verify_select' type="submit" class="btn btn-primary">查询</button>
+
+        </div>
+      </div>
+
+
+      <table class="table table-bordered table-striped table-condensed">
+        <thead>
+          <tr>
+            <th class='noprint'><input id='check_all' type="checkbox"/>打印</th>
+            <th>序号</th>
+            <th class='noprint'>订单时间</th>
+            <th class='noprint'>订单详情</th>
+            <th class='noprint'>订单备注</th>
+            <th>大碗</th>
+            <th>小碗</th>
+            <th>勺子</th>
+            <th class='noprint'>配送人</th>
+            <th>回收人</th>
+            <th>类型</th>
+            <th class='noprint'>状态</th>
+            <th>丢失数</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each items}}
+          <tr orderID='{{order_id}}' style="height:20px" {{#if_eq recycle_user_name "norecycle"}} class='noprint' {{/if_eq}}>
+            <td class="center noprint" style="width:2%"><input orderID='{{order_id}}' class='check_print' type="checkbox" {{#if_ne recycle_user_name "norecycle"}} checked="checked" {{/if_ne}} /></td>
+            <td class="center oid" >{{odi}}{{#if is_transfer}}(转){{/if}}</td>
+            <td class="center noprint" style="width:10%">{{order_time}}</td>
+            <td class="center noprint" style="width:15%">{{menu_list}}</td>
+            <td class="center noprint" style="width:5%" >{{comment}}</td>
+            <td class="center" ondblclick="EditTableWear('{{order_id}}_caiwan')" orderID='{{order_id}}' tabletype='caiwan' id='{{order_id}}_caiwan' style="width:5%" >{{caiwan}}</td>
+            <td class="center" ondblclick="EditTableWear('{{order_id}}_fanwan')" orderID='{{order_id}}' tabletype='fanwan' id='{{order_id}}_fanwan' style="width:5%" >{{fanwan}}</td>
+            <td class="center" ondblclick="EditTableWear('{{order_id}}_shaozi')" orderID='{{order_id}}' tabletype='shaozi' id='{{order_id}}_shaozi' style="width:5%" >{{shaozi}}</td>
+            <td class="center noprint" style="width:5%">{{post_user_name}}</td>
+            <td class="center" style="width:5%">{{recycle_user_name}}</td>
+            {{#if_eq onetime_tablewear true}}
+            <td class="center" style='width:8%'>
+              一次性
+            </td>
+            {{/if_eq}}
+            {{#if_eq onetime_tablewear false}}
+            <td class="center" style='width:8%'>
+              <!--
+              <button class="button blue" id="{{order_id}}" onclick="javascript:setOrderVerify(this, 0)" width="110px;">餐具丢失</button>
+              --!>
+              餐具
+            </td>
+            {{/if_eq}}
+
+            {{#if_eq  current_status 1 }}
+            <td class="center noprint" style="color: red">待配送</td>
+            {{/if_eq}}
+            {{#if_eq current_status  2}}
+            <td class="center noprint" style="color: red">配送中</td>
+            {{/if_eq}}
+            {{#if_eq current_status 3}}
+            <td class="center noprint" style="color: #0076a3">待回收</td>
+            {{/if_eq}}
+            {{#if_eq current_status 4}}
+            <td class="center noprint" style="color: #0076a3">回收中</td>
+            {{/if_eq}}
+            {{#if_eq current_status 5}}
+            <td class="center noprint" style="color: green" >待验收</td>
+            {{/if_eq}}
+            {{#if_eq current_status 6}}
+            <td class="center noprint" style="color: green" >无需回收</td>
+            {{/if_eq}}
+            {{#if_eq current_status 7}}
+            <td class="center noprint" style="color: green" >验收通过</td>
+            {{/if_eq}}
+            {{#if_eq current_status 8}}
+            <td class="cente noprint" style="color: green" >送达</td>
+            {{/if_eq}}
+
+            {{#if_ne current_status 6}}
+            {{#if_ne current_status 7}}
+            <td width="80px">
+              <div style='display:inline-block' ><span>大碗:</span><input class='verify_input' id='{{order_id}}_caiwan_miss' type='text' style='width:20px;height:15px;margin-bottom:2px;padding-top:0px;padding-right:0px;padding-left:0px'></input></div>
+              <div style='display:inline-block' ><span>小碗:</span><input class='verify_input' id='{{order_id}}_fanwan_miss' type='text' style='width:20px;height:15px;margin-bottom:2px;padding-top:0px;padding-right:0px;padding-left:0px' ></input></div>
+              <div style='display:inline-block' ><span>勺子:</span><input class='verify_input' id='{{order_id}}_shaozi_miss' type='text' style='width:20px;height:15px;margin-bottom:2px;padding-top:0px;padding-right:0px;padding-left:0px'></input></div>
+            </td>
+            <td style='vertical-align:middle' class='noprint'>
+              <div class='noprint' style='align:center;display:inline-block'><button class="button blue noprint" id="{{order_id}}" order_status={{current_status}} onclick="javascript:setOrderMiss(this, 1)" >确认</button></div>
+            </td>
+            {{/if_ne}}
+            {{/if_ne}}
+            {{#if_eq current_status 6}}
+            <td>...</td>
+            <td>...</td>
+            {{/if_eq}}
+            {{#if_eq current_status 7}}
+            <td>...</td>
+            <td>...</td>
+            {{/if_eq}}
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div><!--/span-->
+</div><!--/row-->
+
+
+
+<script type="text/javascript">
+  $(".check_print").click(function() {
+    var checked = $(this).attr("checked");
+    var orderID = $(this).attr("orderID");
+    if (checked != "checked") {
+    $("tr[orderID='" + orderID + "']").addClass("noprint");
+    } else {
+    $("tr[orderID='" + orderID + "']").removeClass("noprint");
+    }
+    })
+$("#check_all").click(function() {
+  var checked = $(this).attr("checked");
+  $(".check_print").each(function() {
+    $(this).click();
+    setCheckBox(this, checked);
+    });
+  });
+function setCheckBox(checkObj, checked) {
+  if (checked) {
+    $(checkObj).parent().attr("class",'checked');
+  } else {
+    $(checkObj).parent().attr("class",'');
+  }
+  $(checkObj).attr("checked",checked);
+}
+function EditTableWear(td_id) {
+  var cur_text = $('#'+td_id).text();
+
+  $('#'+td_id).html("<input id='edit_comment' onblur='updateTableWear()' style='height:20px;width=20px' type=text value='" + cur_text + "'/>");
+}
+
+function updateTableWear() {
+  var cur_text = $('#edit_comment').val();
+  var parentTD = $('#edit_comment').parent();
+  if (cur_text == '') {
+    cur_text = '0';
+  }
+  var orderId = $(parentTD).attr("orderID");
+  var type = $(parentTD).attr("tabletype");
+  $('#edit_comment').remove();
+  $(parentTD).text(cur_text);
+  $(parentTD).css("background", "red");
+}
+
+
+$('#select_post').change(function() {
+  });
+
+$("#verify_yesterday").click(function() {
+  var yesterday = new Date();
+  yesterday.setTime((new Date().getTime() - 24 * 60 * 60 * 1000));
+  var dateStr = toDateStr(yesterday);
+  var url = "/order_verify/" + dateStr;
+  window.location.href = url;
+  //window.location.reload();
+  })
+
+$('#verify_select').click(function(){
+  var d1 = $('#date01').val();
+  var d2 = $('#date02').val();
+  var darArr = d1.split("/").reverse();
+  var tmp = darArr[1];
+  darArr[1] = darArr[2];
+  darArr[2] = tmp;
+  d1 = darArr.join('-')
+  alert(d1);
+
+  darArr = d2.split("/").reverse();
+  var tmp = darArr[1];
+  darArr[1] = darArr[2];
+  darArr[2] = tmp;
+  d2 = darArr.join("-");
+  alert(d2);
+  var url = "/order_verify/" + d1 + "/" + d2
+  window.location.href = url;
+  });
+
+
+$(function () {
+  // var bdate = "{{bdate}}";
+  // var edate = "{{edate}}";
+  // bdate = bdate.replace(/-/g, "/");
+  // edate = edate.replace(/-/g, "/");
+  // $('#date01').val(bdate);
+  // $('#date02').val(edate);
+
+  });
+function setOrderVerify(obj, verifyOK) {
+  var orderID = $(obj).attr("id");
+  $.get("/set_order_recycle_verify/" + orderID + "/" + verifyOK, function(data, err) {
+    if (err == "success" && data["error"] == false) {
+    alert("操作成功");
+    $("tr[orderID=" + orderID + "]").remove();
+    } else if (data.error == -2){
+    alert(data.msg)
+    window.location.href='/login.html';
+    window.reload();
+    } else {
+    alert(data.msg)
+    }
+    })
+}
+function setOrderMiss(obj) {
+  var orderID = $(obj).attr("id");
+  var caiwan = $("#" + orderID + "_caiwan_miss").val();
+  var fanwan = $("#" + orderID + "_fanwan_miss").val();
+  var shaozi = $("#" + orderID + "_shaozi_miss").val();
+  var status = $(obj).attr("order_status");
+  if (status != 5) {
+    alert("订单不是待验收状态 " + status);
+    return;
+  }
+  var postData = {
+    "order_id" : orderID,
+    "caiwan" : caiwan,
+    "fanwan": fanwan,
+    "shaozi": shaozi,
+  }
+  $.post("/set_order_recycle_miss", postData, function(data, err) {
+    if (err == "success" && data["error"] == false) {
+    alert("操作成功");
+    $("tr[orderID=" + orderID + "]").remove();
+    } else if (data.error == -2){
+    alert(data.msg)
+    window.location.href='/login.html';
+    window.reload();
+    } else {
+    alert(data.msg)
+    }
+    })
+}
+</script>

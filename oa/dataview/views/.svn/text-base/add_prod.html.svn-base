@@ -1,0 +1,53 @@
+<style type="text/css">
+body  {
+  font-family:Arial,Helvetica,sans-serif;
+  font-size: 10px;
+  vertical-align:middle;
+  font-weight:normal
+}
+.add_item {
+  margin-bottom:10px;
+}
+.add_item_name {
+  margin-right:5px;
+}
+
+.add_item_input {
+  margin-top:5px;
+  display:inline-block;
+}
+.add_btn {
+  align:center;
+  margin-left:10%;
+}
+
+</style>
+<br>
+<div class="row-fluid">
+  <div class="box span12">
+    <div class="box-header">
+      <h2><i class="icon-align-justify"></i><span class="break"></span>添加商品</h2>
+      <div class="box-icon">
+        <a href="#" class="btn-minimize"><i class="icon-chevron-up"></i></a>
+        <a href="#" class="btn-close"><i class="icon-remove"></i></a>
+      </div>
+    </div>
+    <div>
+      <div class='add_item'>
+        <span class='add_item_name'>菜品名字</span>
+        <input class='add_item_input' type='text'/>
+      </div>
+      <div class='add_item'>
+        <span class='add_item_name'>口味标签</span>
+        <input class='add_item_input' type='text'/>
+      </div>
+      <div class='add_btn'>
+        <button class="button blue" id="{{order_id}}" onclick="javascript:setOrderPost(this)" width="110px;">增加</button>
+      </div>
+    </div>
+  </div><!--/span-->
+</div><!--/row-->
+
+
+<script type="text/javascript">
+</script>

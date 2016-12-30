@@ -1,0 +1,83 @@
+<style type="text/css">
+  body  {
+    font-family:Arial,Helvetica,sans-serif;
+    font-size: 10px;
+    vertical-align:middle;
+    font-weight:normal
+  }
+</style>
+
+
+<div class="row-fluid">
+	<div class="box span12">
+		<div class="box-header">
+			<h2><i class="icon-align-justify"></i><span class="break">设置订单配送信息</span></h2>
+			<br>
+      <br>
+		</div>
+
+    <div style="margin-top: 20px;">
+			<font color='green'>
+				<span class="break">订单号: {{order_id}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+				{{#if_eq  status 1 }}
+					<span class="break">设置状态为:待配送</span>
+				{{/if_eq}} 
+				{{#if_eq  status 2 }}
+					<span class="break">设置状态为:配送中</span>
+				{{/if_eq}} 
+				{{#if_eq  status 3 }}
+					<span class="break">设置状态为:待回收</span>
+				{{/if_eq}}
+				{{#if_eq  status 4 }}
+					<span class="break">设置状态为:回收中</span>
+				{{/if_eq}}
+				{{#if_eq  status 5 }}
+					<span class="break">设置状态为:回收完成</span>
+				{{/if_eq}}
+			</font>
+    </div>			
+
+    <div style="margin-top: 20px;">
+      <!-- label for="post_user_list">聚箸配送员列表:</label -->
+      <span>聚箸配送员列表:</span>
+			<select id="post_user_list" name="post_user_list" type="text"  style="width:120px;">
+				{{#each items}}
+				<option value="{{uid}}">{{user_name}}</option>;
+				{{/each}}
+			<select>
+    </div>  
+
+    <div style="margin-left: 300px; margin-top: 30px;">
+			<button id="submit" onclick="ChangeStatus({{order_id}}, {{status}})" width="110px;">提交修改</button>
+		</div>
+		
+	</div><!--/span-->
+</div><!--/row-->
+
+
+<script type="text/javascript">
+$(function () {
+  self.document.title = "设置订单配送/回收人员";
+});
+  
+  
+function  ChangeStatus(order_id, status) {
+	//user_id
+	var user_id = $('#post_user_list').val();
+	var user_name =  $("#post_user_list").find("option:selected").text();
+	
+	var post_data = "user_id=" + user_id + "&user_name=" + user_name + "&";
+	post_data += "order_id=" + order_id + "&status=" + status;
+	
+	$.ajax({
+		type: "POST",
+		async: false,
+		url: "/set_order_status",
+		data: post_data,
+		success: function(msg) {
+			
+		}
+	});
+}
+
+</script>
